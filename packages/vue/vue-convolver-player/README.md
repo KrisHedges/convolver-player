@@ -10,6 +10,8 @@ yarn add @convolver-player/vue
 
 ## Usage
 
+The `ConvolverPlayer` component is designed to be unstyled by default, giving you complete control over its appearance. You will need to provide your own CSS to style the component. The waveform display will attempt to use the browser's `accent-color` for the waveform, with a fallback to a default blue color if `accent-color` is not available.
+
 ### Simple Usage
 
 In its simplest form, you can use the `ConvolverPlayer` component by just providing the `irFilePath` prop. The component will handle the creation of the `AudioContext`.
@@ -22,6 +24,17 @@ In its simplest form, you can use the `ConvolverPlayer` component by just provid
 <script setup>
 import { ConvolverPlayer } from '@convolver-player/vue';
 </script>
+
+<style scoped>
+/* Example styling for the ConvolverPlayer component */
+.convolver-player {
+  /* Your styles here */
+}
+.waveform-canvas {
+  /* Your styles here */
+}
+/* ... other styles ... */
+</style>
 ```
 
 ### Advanced Usage: Shared `AudioContext`
@@ -55,6 +68,14 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style scoped>
+/* Example styling for the ConvolverPlayer components */
+.convolver-player {
+  /* Your styles here */
+}
+/* ... other styles ... */
+</style>
 ```
 
 ## Props
