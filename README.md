@@ -8,13 +8,19 @@ This project is managed as a monorepo using [Yarn Workspaces](https://classic.ya
 
 ## Packages
 
+### `@convolver-player/core`
+
+*   **Location**: `packages/core/convolver-player-core`
+*   **Language**: TypeScript
+*   **Description**: Contains the core, framework-agnostic logic for audio processing (Web Audio API management, impulse response loading, convolution, gain control) and waveform visualization. This package is designed to be consumed by framework-specific component implementations.
+
 ### `@convolver-player/vue`
 
 *   **Location**: `packages/vue/vue-convolver-player`
 *   **Framework**: Vue 3
 *   **Language**: TypeScript
 *   **Build Tool**: Vite (configured with `rolldown-vite` for experimental performance)
-*   **Description**: The Vue version of the convolver player component, offering a customizable audio convolution experience.
+*   **Description**: The Vue version of the convolver player component, offering a customizable audio convolution experience, built on top of `@convolver-player/core`.
 
 ## Getting Started
 
@@ -30,7 +36,7 @@ yarn install
 
 ### 2. Development
 
-To start the development server for a specific package, use the `yarn workspace` command. For example, to run the development server for the Vue component:
+To start the development server for a specific UI package, use the `yarn workspace` command. For example, to run the development server for the Vue component:
 
 ```bash
 yarn workspace @convolver-player/vue dev
@@ -46,7 +52,13 @@ To build a specific package for production, use the `yarn workspace` command wit
 yarn workspace @convolver-player/vue build
 ```
 
-This command will compile the component into its distributable format (e.g., `dist/vue-convolver-player.es.js`, `dist/vue-convolver-player.umd.js`, `dist/style.css`).
+Or to build the core library:
+
+```bash
+yarn workspace @convolver-player/core build
+```
+
+These commands will compile the respective package into its distributable format.
 
 ### 4. Testing
 
@@ -56,10 +68,22 @@ To run the unit tests for a specific package, use the `yarn workspace` command w
 yarn workspace @convolver-player/vue test:run
 ```
 
+Or for the core library:
+
+```bash
+yarn workspace @convolver-player/core test:run
+```
+
 If you wish to run tests with coverage reporting:
 
 ```bash
 yarn workspace @convolver-player/vue test:run:coverage
+```
+
+Or for the core library:
+
+```bash
+yarn workspace @convolver-player/core test:run:coverage
 ```
 
 ## Contributing

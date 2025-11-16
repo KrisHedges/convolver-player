@@ -1,0 +1,23 @@
+{
+  "name": "@convolver-player/core",
+  "version": "1.0.0",
+  "description": "Core logic for Convolver Player components",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test:run": "vitest --run",
+    "test:run:coverage": "vitest --coverage --run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
