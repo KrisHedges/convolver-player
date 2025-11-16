@@ -1,6 +1,6 @@
 <template>
   <div class="convolver-player">
-    <div class="examples">
+    <div class="convolver-examples">
       <button
         v-for="sound in testSounds"
         :key="sound.label"
@@ -11,28 +11,24 @@
         {{ sound.label }}
       </button>
     </div>
-    <div class="ir">
-      <h6 v-if="irBuffer" class="info">
+    <div class="convolver-ir">
+      <span v-if="irBuffer" class="convolver-ir-info">
         Duration: {{ irBuffer.duration.toFixed(2) }}s, Sample Rate:
         {{ irBuffer.sampleRate }}Hz, Channels: {{ irBuffer.numberOfChannels }}
-      </h6>
-      <div class="waveform-section">
-        <canvas ref="waveformCanvas" class="waveform-canvas"></canvas>
-      </div>
-      <div class="playback-controls">
-        <div class="param-group">
-          <label for="wet-gain">Effect:</label>
-          <input
-            type="range"
-            id="wet-gain"
-            min="0"
-            max="1"
-            step="0.01"
-            v-model="wetGainValue"
-            :style="`--value: ${Math.round(wetGainValue * 100)}%`"
-          />
-          <span key="wet-gain-display-key">{{ displayedWetGain }}</span>
-        </div>
+      </span>
+      <canvas ref="waveformCanvas" class="convolver-waveform-canvas"></canvas>
+      <div class="convolver-controls">
+        <label for="wet-gain">Effect:</label>
+        <input
+          type="range"
+          id="wet-gain"
+          min="0"
+          max="1"
+          step="0.01"
+          v-model="wetGainValue"
+          :style="`--value: ${Math.round(wetGainValue * 100)}%`"
+        />
+        <span key="wet-gain-display-key">{{ displayedWetGain }}</span>
       </div>
     </div>
   </div>

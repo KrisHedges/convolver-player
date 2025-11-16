@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, type ComponentPublicInstance } from 'vue';
-import ConvolverPlayer from './components/ConvolverPlayer.vue';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // You can choose a different theme
+import {
+  onMounted,
+  ref,
+  onBeforeUnmount,
+  nextTick,
+  type ComponentPublicInstance,
+} from "vue";
+import ConvolverPlayer from "./components/ConvolverPlayer.vue";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css"; // You can choose a different theme
 
 const codeBlocks = ref<HTMLElement[]>([]);
 const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
@@ -12,33 +18,118 @@ const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
 };
 
 onMounted(() => {
-  codeBlocks.value.forEach((block) => {
-    hljs.highlightElement(block);
+  nextTick(() => {
+    codeBlocks.value.forEach((block) => {
+      hljs.highlightElement(block);
+    });
   });
+});
+
+// Create a single AudioContext to be shared across multiple ConvolverPlayer instances.
+// This is good practice to prevent resource exhaustion and performance issues.
+const localAudioContext = ref<AudioContext | null>(null);
+onMounted(() => {
+  const AudioContext =
+    window.AudioContext || (window as any).webkitAudioContext;
+  if (AudioContext) {
+    localAudioContext.value = new AudioContext();
+  } else {
+    console.error("AudioContext is not supported in this browser.");
+  }
+});
+
+onBeforeUnmount(() => {
+  if (localAudioContext.value && localAudioContext.value.state !== "closed") {
+    localAudioContext.value.close();
+  }
 });
 </script>
 
 <template>
   <div class="container">
-    <ConvolverPlayer irFilePath="/ir.wav" />
+    <h1>ConvolverPlayer Demo</h1>
 
-    <section class="blog-post">
-      <h1>Styling the ConvolverPlayer Component</h1>
-      <p>The <code>ConvolverPlayer</code> component is designed to be unstyled by default, giving you complete control over its appearance. This allows for maximum flexibility when integrating it into your application's design system.</p>
+    <section>
+      <h2>Single Use Example</h2>
+      <p>
+        Here's the simplest use case a single instance of the <code>ConvolverPlayer</code> component. Just point it to your wav file to use and it will handle the AudioContext creation for you.
+      </p>
+      <ConvolverPlayer irFilePath="/ir.wav" />
+      <pre><code :ref="setCodeBlockRef" class="language-html">
+&lt;!-- The easiest of uses just give your ir file path --&gt
+&lt;ConvolverPlayer irFilePath="/ir.wav" /&gt;
+      </code></pre>
+    </section>
 
+    <section>
+      <h2>Multi-Use Example (Shared AudioContext)</h2>
+      <p>
+        When using multiple <code>ConvolverPlayer</code> components on the same
+        page, it's best practice to share a single
+        <code>AudioContext</code> instance. This prevents resource exhaustion
+        and potential performance issues that can arise from creating multiple
+        contexts. The <code>ConvolverPlayer</code> component accepts an
+        <code>audioContext</code> prop for this purpose.
+      </p>
+      <ConvolverPlayer irFilePath="/ir.wav" :audioContext="localAudioContext" />
+      <ConvolverPlayer
+        irFilePath="/src/assets/sounds/click.wav"
+        :audioContext="localAudioContext"
+      />
+      <ConvolverPlayer
+        irFilePath="/src/assets/sounds/piano.wav"
+        :audioContext="localAudioContext"
+      />
+      <ConvolverPlayer
+        irFilePath="/src/assets/sounds/guitar.wav"
+        :audioContext="localAudioContext"
+      />
+      <pre><code :ref="setCodeBlockRef" class="language-html">
+&lt;script setup lang="ts"&gt;
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import ConvolverPlayer from './components/ConvolverPlayer.vue';
+
+/** Setup an AudioContext to use for all players */
+const localAudioContext = ref&lt;AudioContext | null&gt;(null);
+onMounted(() => {
+  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+  if (AudioContext) {
+    localAudioContext.value = new AudioContext();
+  }
+});
+
+/** Cleanup AudioContext when unmounted */
+onBeforeUnmount(() => {
+  if (localAudioContext.value && localAudioContext.value.state !== "closed") {
+    localAudioContext.value.close();
+  }
+});
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;ConvolverPlayer irFilePath="/ir.wav" :audioContext="localAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/click.wav" :audioContext="localAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/piano.wav" :audioContext="localAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/guitar.wav" :audioContext="localAudioContext" /&gt;
+&lt;/template&gt;
+      </code></pre>
+    </section>
+
+    <section>
       <h2>Component Structure</h2>
-      <p>The component exposes a clear class structure that you can target with your CSS. Here's a breakdown of the main elements:</p>
+      <p>
+        The components class structure can be targeted with
+        your CSS. Here's a breakdown of the main elements:
+      </p>
       <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;div class="convolver-player"&gt;
-  &lt;div class="examples"&gt;
+  &lt;div class="convolver-examples"&gt;
     &lt;button&gt;...&lt;/button&gt;
   &lt;/div&gt;
-  &lt;div class="ir"&gt;
-    &lt;span class="info"&gt;...&lt;/span&gt;
-    &lt;div class="waveform-section"&gt;
-      &lt;canvas class="waveform-canvas"&gt;&lt;/canvas&gt;
-    &lt;/div&gt;
-    &lt;div class="controls"&gt;
+  &lt;div class="convolver-ir"&gt;
+    &lt;span class="convolver-ir-info"&gt;...&lt;/span&gt;
+    &lt;canvas class="convolver-waveform-canvas"&gt;&lt;/canvas&gt;
+    &lt;div class="convolver-controls"&gt;
       &lt;label&gt;...&lt;/label&gt;
       &lt;input type="range"&gt;
       &lt;span&gt;...&lt;/span&gt;
@@ -46,62 +137,63 @@ onMounted(() => {
   &lt;/div&gt;
 &lt;/div&gt;
       </code></pre>
+    </section>
 
+    <section>
       <h2>Styling Example</h2>
-      <p>Below is the CSS used in this demo application to style the <code>ConvolverPlayer</code> component. You can adapt these styles or create your own to match your application's theme.</p>
+      <p>
+        Below is the CSS used in this demo application to style the
+        <code>ConvolverPlayer</code> component. You can adapt these styles or
+        create your own to match your application's theme.
+      </p>
+      <p>
+        The waveform itself will attempt to use the browser's
+        <code>accent-color</code> for its primary color. If
+        <code>accent-color</code> is not available, it will fall back to a
+        default blue (<code>#007aff</code>).
+      </p>
       <pre><code :ref="setCodeBlockRef" class="language-css">
+/* Demo style for ConvolverPlayer */
+:root {
+  accent-color: rgb(139, 82, 199);
+}
 .convolver-player {
   display: grid;
   grid-template-columns: 2fr 5fr;
   column-gap: 1em;
-  row-gap: 0;
-  padding: 3em;
+  padding: 2em;
   margin: 1em 0;
   background-color: rgba(0,0,0,0.1);
-  border-radius: 5px;
-  height: fit-content;
-  box-shadow: 0 0 0.95px ButtonBorder; /* Using system color for shadow */
+  box-shadow: 0 0 0.95px ButtonBorder;
+  .convolver-examples {
+    display: grid;
+    gap: 0.35em;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    button {
+      height: 100%;
+    }
+  }
+  .convolver-ir {
+    display: grid;
+    align-items: center;
+    gap: .5em;
+    .convolver-ir-info {
+      align-content: center;
+    }
+    .convolver-waveform-canvas {
+      width: 100%;
+      height: 100px;
+      background-color: Canvas;
+      box-shadow: 0 0 0.95px ButtonBorder;
+    }
+    .convolver-controls {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+    }
+  }
 }
-
-.convolver-player .examples {
-  display: grid;
-  gap: 1em;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-}
-
-.convolver-player .examples button {
-  height: 100%;
-}
-
-.convolver-player .ir {
-  display: grid;
-  align-items: center;
-  row-gap: .5em;
-}
-
-.convolver-player .ir .info {
-  align-content: center;
-  height: 32px;
-}
-
-.convolver-player .ir .waveform-section .waveform-canvas {
-  width: 100%;
-  height: 100px;
-  background-color: Canvas; /* Using system color for background */
-  box-shadow: 0 0 0.95px ButtonBorder; /* Using system color for shadow */
-}
-
-.convolver-player .ir .controls {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-}
-
-/* You can further style elements like labels, input[type="range"], and spans within .controls */
-      </code></pre>
-
-      <h2>Waveform Colors</h2>
-      <p>The waveform itself will attempt to use the browser's <code>accent-color</code> for its primary color. If <code>accent-color</code> is not available, it will fall back to a default blue (<code>#007aff</code>). The background of the waveform canvas will use the system's <code>Canvas</code> color, and its shadow will use <code>ButtonBorder</code>.</p>
+</code></pre>
     </section>
   </div>
 </template>
@@ -122,47 +214,46 @@ onMounted(() => {
 body {
   font-size: 16px;
 }
-
+pre {
+  box-shadow: 0 0 0.95px ButtonBorder;
+}
 .container {
   width: 800px;
   margin: 0 auto;
 }
 
+/* Existing convolver-player styles */
 .convolver-player {
   display: grid;
   grid-template-columns: 2fr 5fr;
   column-gap: 1em;
-  row-gap: 0;
-  padding: 3em;
+  padding: 2em;
   margin: 1em 0;
-  background-color: rgba(0,0,0,0.1);
-  border-radius: 5px;
-  height: fit-content;
+  background-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 0.95px ButtonBorder;
-  .examples {
+  .convolver-examples {
     display: grid;
-    gap: 1em;
+    gap: 0.35em;
     grid-template-columns: 1fr 1fr;
     align-items: center;
     button {
       height: 100%;
     }
   }
-  .ir {
+  .convolver-ir {
     display: grid;
     align-items: center;
-    row-gap: .5em;
-    .info {
+    gap: 0.5em;
+    .convolver-ir-info {
       align-content: center;
-      height: 32px;
     }
-    .waveform-canvas {
+    .convolver-waveform-canvas {
       width: 100%;
       height: 100px;
       background-color: Canvas;
       box-shadow: 0 0 0.95px ButtonBorder;
     }
-    .controls {
+    .convolver-controls {
       display: grid;
       grid-template-columns: auto 1fr auto;
     }

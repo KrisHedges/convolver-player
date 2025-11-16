@@ -49,7 +49,7 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
-    const clickButton = wrapper.find('.examples').findAll('button')[0];
+    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
@@ -105,7 +105,7 @@ describe('ConvolverPlayer', () => {
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
-    const clickButton = wrapper.find('.examples').findAll('button')[0];
+    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
@@ -141,7 +141,7 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Check if the IR information is displayed
-    const info = wrapper.find('.info');
+    const info = wrapper.find('.convolver-ir-info');
     expect(info.exists()).toBe(true);
     expect(info.text()).toContain('Duration: 0.10s');
     expect(info.text()).toContain('Sample Rate: 44100Hz');
@@ -249,7 +249,7 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
-    const clickButton = wrapper.find('.examples').findAll('button')[0];
+    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
@@ -268,7 +268,7 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
-    const clickButton = wrapper.find('.examples').findAll('button')[0];
+    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
@@ -296,7 +296,7 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
-    const clickButton = wrapper.find('.examples').findAll('button')[0];
+    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
@@ -337,14 +337,14 @@ describe('ConvolverPlayer', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
-    const clickButton1 = wrapper.find('.examples').findAll('button')[0];
+    const clickButton1 = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton1.trigger('click');
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for first sound to start
 
     const firstBufferSource = wrapper.vm.activeBufferSource;
 
     // Simulate a click on the second test sound button
-    const clickButton2 = wrapper.find('.examples').findAll('button')[1];
+    const clickButton2 = wrapper.find('.convolver-examples').findAll('button')[1];
     await clickButton2.trigger('click');
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for second sound to start
 
