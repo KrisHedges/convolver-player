@@ -4,6 +4,7 @@ import {
   ref,
   onBeforeUnmount,
   nextTick,
+  type ComponentPublicInstance,
 } from "vue";
 import ConvolverPlayer from "./components/ConvolverPlayer.vue";
 import hljs from "highlight.js";
@@ -12,7 +13,7 @@ import "highlight.js/styles/github.css";
 const sharedAudioContext = ref<AudioContext | null>(null); // Declare sharedAudioContext here
 
 const codeBlocks = ref<HTMLElement[]>([]);
-const setCodeBlockRef = (el: Element | null) => {
+const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
   if (el && el instanceof HTMLElement) {
     codeBlocks.value.push(el);
   }

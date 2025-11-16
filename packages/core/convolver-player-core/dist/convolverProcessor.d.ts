@@ -9,7 +9,6 @@ export declare class ConvolverProcessor {
     private irBuffer;
     private wetGain;
     private dryGain;
-    private activeBufferSource;
     private timeoutId;
     constructor(options: ConvolverProcessorOptions);
     play(buffer: AudioBuffer): Promise<void>;

@@ -13,7 +13,6 @@ export class ConvolverProcessor {
   private wetGain: GainNode; // Persistent wet gain node
   private dryGain: GainNode; // Persistent dry gain node
 
-  private activeBufferSource: AudioBufferSourceNode | null = null;
   private timeoutId: number | null = null;
 
   constructor(options: ConvolverProcessorOptions) {
@@ -42,7 +41,6 @@ export class ConvolverProcessor {
 
     const bufferSource = this.audioContext.createBufferSource();
     bufferSource.buffer = buffer;
-    this.activeBufferSource = bufferSource;
 
     // Connect graph: source -> dryGain -> destination
     //              source -> convolver -> wetGain -> destination
@@ -61,8 +59,7 @@ export class ConvolverProcessor {
 
       this.timeoutId = window.setTimeout(() => {
                   // wetGain and dryGain are persistent, only disconnect convolverNode
-                  this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.activeBufferSource = null;
-        this.timeoutId = null;
+                  this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.timeoutId = null;
         resolve();
       }, timeoutDelay);
     });
@@ -75,7 +72,6 @@ export class ConvolverProcessor {
     }
 
     // activeBufferSource is stopped by scheduled stop, just clear reference
-    this.activeBufferSource = null;
   }
 
   /**

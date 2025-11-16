@@ -1,7 +1,6 @@
 // packages/core/convolver-player-core/src/convolverProcessor.ts
 export class ConvolverProcessor {
     constructor(options) {
-        this.activeBufferSource = null;
         this.timeoutId = null;
         this.audioContext = options.audioContext;
         this.irBuffer = options.irBuffer;
@@ -20,7 +19,6 @@ export class ConvolverProcessor {
         this.stop();
         const bufferSource = this.audioContext.createBufferSource();
         bufferSource.buffer = buffer;
-        this.activeBufferSource = bufferSource;
         // Connect graph: source -> dryGain -> destination
         //              source -> convolver -> wetGain -> destination
         bufferSource.connect(this.dryGain); // Connect to persistent dryGain
@@ -34,8 +32,7 @@ export class ConvolverProcessor {
             const timeoutDelay = totalDuration * 1000 + 500;
             this.timeoutId = window.setTimeout(() => {
                 // wetGain and dryGain are persistent, only disconnect convolverNode
-                this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.activeBufferSource = null;
-                this.timeoutId = null;
+                this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.timeoutId = null;
                 resolve();
             }, timeoutDelay);
         });
@@ -46,7 +43,6 @@ export class ConvolverProcessor {
             this.timeoutId = null;
         }
         // activeBufferSource is stopped by scheduled stop, just clear reference
-        this.activeBufferSource = null;
     }
     /**
      * Updates the impulse response buffer for the convolver.
