@@ -11,7 +11,9 @@
   ],
   "scripts": {
     "build": "tsc",
+    "test": "vitest",
     "test:run": "vitest --run",
+    "test:coverage": "vitest --coverage",
     "test:run:coverage": "vitest --coverage --run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.ts",
@@ -21,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.9",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "eslint": "^9.39.1",
