@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type ComponentPublicInstance } from 'vue';
 import ConvolverPlayer from './components/ConvolverPlayer.vue';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // You can choose a different theme
 
-const codeBlocks = ref([]);
+const codeBlocks = ref<HTMLElement[]>([]);
+const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
+  if (el && el instanceof HTMLElement) {
+    codeBlocks.value.push(el);
+  }
+};
 
 onMounted(() => {
   codeBlocks.value.forEach((block) => {
@@ -23,7 +28,7 @@ onMounted(() => {
 
       <h2>Component Structure</h2>
       <p>The component exposes a clear class structure that you can target with your CSS. Here's a breakdown of the main elements:</p>
-      <pre><code ref="codeBlocks" class="language-html">
+      <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;div class="convolver-player"&gt;
   &lt;div class="examples"&gt;
     &lt;button&gt;...&lt;/button&gt;
@@ -44,7 +49,7 @@ onMounted(() => {
 
       <h2>Styling Example</h2>
       <p>Below is the CSS used in this demo application to style the <code>ConvolverPlayer</code> component. You can adapt these styles or create your own to match your application's theme.</p>
-      <pre><code ref="codeBlocks" class="language-css">
+      <pre><code :ref="setCodeBlockRef" class="language-css">
 .convolver-player {
   display: grid;
   grid-template-columns: 2fr 5fr;
