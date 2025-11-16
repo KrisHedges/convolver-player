@@ -4,8 +4,8 @@
       <button
         v-for="sound in testSounds"
         :key="sound.label"
-        @click="playTestSound(sound)"
         :disabled="!irBuffer"
+        @click="playTestSound(sound)"
       >
         <i class="lni lni-play"></i>
         {{ sound.label }}
@@ -16,16 +16,17 @@
         Duration: {{ irBuffer.duration.toFixed(2) }}s, Sample Rate:
         {{ irBuffer.sampleRate }}Hz, Channels: {{ irBuffer.numberOfChannels }}
       </span>
+      <span v-else>Loading IR...</span>
       <canvas ref="waveformCanvas" class="convolver-waveform-canvas"></canvas>
       <div class="convolver-controls">
         <label for="wet-gain">Effect:</label>
         <input
-          type="range"
           id="wet-gain"
+          v-model="wetGainValue"
+          type="range"
           min="0"
           max="1"
           step="0.01"
-          v-model="wetGainValue"
           :style="`--value: ${Math.round(wetGainValue * 100)}%`"
         />
         <span key="wet-gain-display-key">{{ displayedWetGain }}</span>
@@ -36,45 +37,33 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
-
-interface TestSound {
-  label: string;
-  type: "sample";
-  path: string;
-}
-
-interface Props {
-  irFilePath: string;
-  audioContext?: AudioContext | null;
-}
+import {
+  loadAudioBuffer,
+  ConvolverProcessor,
+  drawWaveform,
+  setupCanvasContext,
+  getAccentColor,
+} from "@convolver-player/core";
+import type { TestSound, Props } from "../types";
 
 const props = defineProps<Props>();
 
-const localAudioContext = ref<AudioContext | null>(null);
-const currentAudioContext = computed<AudioContext | null>(
-  () => props.audioContext || localAudioContext.value
-);
+let convolverProcessor: ConvolverProcessor | null = null;
 
-const convolverNode = ref<ConvolverNode | null>(null);
+const localAudioContext = ref<AudioContext | null>(null);
+
 const irBuffer = ref<AudioBuffer | null>(null);
-const irFileName = ref<string>("");
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 let rafId: number | null = null;
-let timeoutId = ref<number | null>(null); // Ref to store setTimeout ID
-
-// Refs to store active audio nodes for proper cleanup
-let activeBufferSource = ref<AudioBufferSourceNode | null>(null);
-let activeWetGain = ref<GainNode | null>(null);
-let activeDryGain = ref<GainNode | null>(null);
-
-const accentColor = ref<string>("");
 
 const wetGainValue = ref<number>(1); // Initial wet gain value (100% wet)
 
 const displayedWetGain = computed<string>(() => {
   return String((wetGainValue.value * 100).toFixed(0)) + "%";
 });
+
+
 
 import click from "../assets/sounds/click.wav";
 import piano from "../assets/sounds/piano.wav";
@@ -89,236 +78,77 @@ const testSounds: TestSound[] = [
 ];
 
 // Function to load the IR
-const loadIR = async (path: string) => {
-  if (!currentAudioContext.value) {
-    console.error("No AudioContext available to load IR.");
-    return;
-  }
-
+const loadIR = async (path: string, audioContext: AudioContext) => {
   try {
-    const response = await fetch(path);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    try {
-      irBuffer.value = await currentAudioContext.value.decodeAudioData(
-        arrayBuffer
-      );
-      irFileName.value = path.split("/").pop() || ""; // Extract file name
-      setupCanvas();
-    } catch (decodeError) {
-      console.error("Error decoding IR audio data:", decodeError);
-    }
+    irBuffer.value = await loadAudioBuffer(audioContext, path);
+    setupCanvasAndDraw();
   } catch (error) {
     console.error("Error loading IR:", error);
     irBuffer.value = null;
-    irFileName.value = "";
   }
 };
 
 // Function to generate and play a test sound through the IR
 const playTestSound = async (soundConfig: TestSound) => {
-  if (!currentAudioContext.value) {
-    const AudioContext =
-      window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContext) {
-      localAudioContext.value = new AudioContext();
-    } else {
-      console.error("AudioContext is not supported in this browser.");
-      return;
-    }
-  }
+  const audioContext = props.audioContext || localAudioContext.value;
 
-  if (
-    currentAudioContext.value &&
-    currentAudioContext.value.state === "suspended"
-  ) {
-    await currentAudioContext.value.resume();
-  }
-
-  if (!currentAudioContext.value || !irBuffer.value) {
-    console.warn("AudioContext or IR not ready.");
+  if (!audioContext || !convolverProcessor) {
+    console.warn("AudioContext or ConvolverProcessor not initialized.");
     return;
   }
 
-  if (timeoutId.value) {
-    clearTimeout(timeoutId.value);
+  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
   }
 
-  if (activeBufferSource.value) {
-    try {
-      activeBufferSource.value.stop();
-      activeBufferSource.value.disconnect();
-    } catch (e) {
-      console.warn("Could not stop/disconnect previous buffer source:", e);
-    }
-  }
-  if (activeWetGain.value) {
-    activeWetGain.value.disconnect();
-  }
-  if (activeDryGain.value) {
-    activeDryGain.value.disconnect();
+  if (!irBuffer.value) {
+    console.warn("IR not ready.");
+    return;
   }
 
-  const bufferSource = currentAudioContext.value.createBufferSource();
-  let testBuffer: AudioBuffer;
-  let duration: number;
-
-  if (soundConfig.type === "sample") {
-    try {
-      const response = await fetch(soundConfig.path);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      try {
-        testBuffer = await currentAudioContext.value.decodeAudioData(
-          arrayBuffer
-        );
-        duration = testBuffer.duration;
-      } catch (decodeError) {
-        console.error("Error decoding sample audio data:", decodeError);
-        return;
-      }
-    } catch (error) {
-      console.error("Error loading sample:", error);
-      return;
-    }
+  try {
+    const testBuffer = await loadAudioBuffer(audioContext, soundConfig.path);
+    await convolverProcessor.play(testBuffer);
+  } catch (error) {
+    console.error("Error playing test sound:", error);
   }
-
-  bufferSource.buffer = testBuffer!;
-  activeBufferSource.value = bufferSource;
-
-  if (!convolverNode.value) {
-    convolverNode.value = currentAudioContext.value.createConvolver();
-  }
-  convolverNode.value.buffer = irBuffer.value;
-
-  const wetGain = currentAudioContext.value.createGain();
-  wetGain.gain.value = wetGainValue.value;
-  activeWetGain.value = wetGain;
-
-  const dryGain = currentAudioContext.value.createGain();
-  dryGain.gain.value = 1 - wetGainValue.value;
-  activeDryGain.value = dryGain;
-
-  bufferSource.connect(dryGain);
-  dryGain.connect(currentAudioContext.value.destination);
-
-  bufferSource.connect(convolverNode.value);
-  convolverNode.value.connect(wetGain);
-  wetGain.connect(currentAudioContext.value.destination);
-
-  bufferSource.start(0);
-
-  bufferSource.onended = () => {
-    bufferSource.disconnect();
-  };
-
-  const totalDuration = duration! + irBuffer.value.duration;
-  timeoutId.value = setTimeout(() => {
-    convolverNode.value?.disconnect();
-    wetGain.disconnect();
-    dryGain.disconnect();
-    activeBufferSource.value = null;
-    activeWetGain.value = null;
-    activeDryGain.value = null;
-    timeoutId.value = null;
-  }, totalDuration * 1000);
 };
 
-const setupCanvas = () => {
-  if (!waveformCanvas.value) return;
+const setupCanvasAndDraw = () => {
+  if (!waveformCanvas.value || !irBuffer.value) return;
 
   const canvas = waveformCanvas.value;
-  const rect = canvas.getBoundingClientRect();
-  const logicalWidth = rect.width;
-  const logicalHeight = rect.height;
+  const context = setupCanvasContext(canvas);
+  if (!context) return;
+  ctx.value = context;
 
-  ctx.value = canvas.getContext("2d");
-  if (!ctx.value) return;
-
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = logicalWidth * dpr;
-  canvas.height = logicalHeight * dpr;
-
-  ctx.value.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const computedStyle = getComputedStyle(canvas);
-  const computedAccentColor = computedStyle
-    .getPropertyValue("accent-color")
-    .trim();
-  accentColor.value = computedAccentColor || "#007aff"; // Fallback to a default blue
-
-  ctx.value.clearRect(0, 0, logicalWidth, logicalHeight);
-  drawWaveform(logicalWidth, logicalHeight);
-};
-
-const drawWaveform = (width: number, height: number) => {
-  if (!ctx.value || !irBuffer.value) return;
-
-  const data = irBuffer.value.getChannelData(0);
-  const step = Math.ceil(data.length / width);
-
-  let maxAmplitude = 0;
-  for (let i = 0; i < data.length; i++) {
-    const datum = data[i];
-    if (datum !== undefined) {
-      const absDatum = Math.abs(datum);
-      if (absDatum > maxAmplitude) {
-        maxAmplitude = absDatum;
-      }
-    }
-  }
-
-  if (maxAmplitude === 0) maxAmplitude = 0.01;
-
-  const verticalCenter = height / 2;
-
-  ctx.value.beginPath();
-
-  ctx.value.strokeStyle = accentColor.value;
-  ctx.value.lineWidth = 1.5;
-
-  for (let i = 0; i < width; i++) {
-    let min = 0;
-    let max = 0;
-    const startIndex = i * step;
-    const endIndex = Math.min(startIndex + step, data.length);
-
-    if (startIndex < endIndex) {
-      const firstDatum = data[startIndex];
-      if (firstDatum !== undefined) {
-        min = firstDatum;
-        max = firstDatum;
-      }
-      for (let j = startIndex + 1; j < endIndex; j++) {
-        const datum = data[j];
-        if (datum !== undefined) {
-          if (datum < min) min = datum;
-          if (datum > max) max = datum;
-        }
-      }
-    }
-
-    const normalizedMin = min / maxAmplitude;
-    const normalizedMax = max / maxAmplitude;
-
-    ctx.value.lineTo(i, verticalCenter + normalizedMin * verticalCenter);
-    ctx.value.lineTo(i, verticalCenter + normalizedMax * verticalCenter);
-  }
-  ctx.value.stroke();
+  const color = getAccentColor(canvas);
+  drawWaveform(ctx.value, irBuffer.value, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1), color);
 };
 
 watch(
-  [() => props.irFilePath, currentAudioContext],
-  ([newPath, newAudioContext]) => {
-    if (newPath && newAudioContext) {
-      loadIR(newPath as string);
-    } else if (!newPath) {
+  () => props.irFilePath,
+  async (newPath) => {
+    const audioContext = props.audioContext || localAudioContext.value;
+
+    if (!audioContext) return;
+
+    if (newPath) {
+      await loadIR(newPath, audioContext);
+      if (irBuffer.value) {
+        if (convolverProcessor) {
+          convolverProcessor.updateIrBuffer(irBuffer.value); // Call updateIrBuffer
+        } else {
+          convolverProcessor = new ConvolverProcessor({ // Initialize if not exists
+            audioContext: audioContext,
+            irBuffer: irBuffer.value,
+            wetGainValue: wetGainValue.value, // Pass wetGainValue
+          });
+        }
+      }
+    } else {
       irBuffer.value = null;
-      irFileName.value = "";
       if (ctx.value && waveformCanvas.value) {
         ctx.value.clearRect(
           0,
@@ -332,47 +162,58 @@ watch(
   { immediate: true }
 );
 
-watch(wetGainValue, (newValue: number) => {
-  if (activeWetGain.value) {
-    activeWetGain.value.gain.value = newValue;
-  }
-  if (activeDryGain.value) {
-    activeDryGain.value.gain.value = 1 - newValue;
-  }
-});
+
 
 watch(irBuffer, () => {
   if (rafId) {
     window.cancelAnimationFrame(rafId);
   }
-  rafId = window.requestAnimationFrame(setupCanvas);
+  rafId = window.requestAnimationFrame(setupCanvasAndDraw);
+});
+
+watch(wetGainValue, (newValue: number) => {
+  if (convolverProcessor) {
+    convolverProcessor.setWetDryMix(newValue);
+  }
 });
 
 let resizeObserver: ResizeObserver | null = null;
 
-onMounted(() => {
-  if (!props.audioContext) {
-    const AudioContext =
-      window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContext) {
-      localAudioContext.value = new AudioContext();
-    } else {
-      console.error("AudioContext is not supported in this browser.");
-    }
+onMounted(async () => {
+  let audioContext: AudioContext;
+  if (props.audioContext) {
+    audioContext = props.audioContext;
+  } else {
+    localAudioContext.value = new AudioContext();
+    audioContext = localAudioContext.value;
   }
 
-  if (
-    currentAudioContext.value &&
-    currentAudioContext.value.state === "suspended"
-  ) {
-    currentAudioContext.value.resume();
+  if (!audioContext) {
+    console.error("AudioContext is not supported in this browser.");
+    return;
+  }
+  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
+
+  // Initialize convolverProcessor here if irFilePath is already set
+  if (props.irFilePath && !convolverProcessor) {
+    await loadIR(props.irFilePath, audioContext); // Load IR first
+    if (irBuffer.value) {
+      convolverProcessor = new ConvolverProcessor({
+        audioContext: audioContext,
+        irBuffer: irBuffer.value,
+        wetGainValue: wetGainValue.value,
+      });
+    }
   }
 
   resizeObserver = new ResizeObserver(() => {
     if (rafId) {
       window.cancelAnimationFrame(rafId);
     }
-    rafId = window.requestAnimationFrame(setupCanvas);
+    rafId = window.requestAnimationFrame(setupCanvasAndDraw);
   });
 
   if (waveformCanvas.value && waveformCanvas.value.parentElement) {
@@ -387,8 +228,11 @@ onBeforeUnmount(() => {
   if (rafId) {
     window.cancelAnimationFrame(rafId);
   }
-  if (localAudioContext.value && localAudioContext.value.state !== "closed") {
-    localAudioContext.value.close();
+  if (convolverProcessor) {
+    convolverProcessor.dispose();
+  }
+  if (localAudioContext.value) { // Check if local context exists
+    localAudioContext.value.close(); // Close local context
   }
 });
 </script>
