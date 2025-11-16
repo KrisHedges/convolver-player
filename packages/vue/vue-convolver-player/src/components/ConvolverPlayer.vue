@@ -63,7 +63,7 @@ const convolverNode = ref<ConvolverNode | null>(null);
 const irBuffer = ref<AudioBuffer | null>(null);
 const irFileName = ref<string>("");
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
-let ctx: CanvasRenderingContext2D | null = null;
+const ctx = ref<CanvasRenderingContext2D | null>(null);
 let rafId: number | null = null;
 let timeoutId = ref<number | null>(null); // Ref to store setTimeout ID
 
@@ -240,14 +240,14 @@ const setupCanvas = () => {
   const logicalWidth = rect.width;
   const logicalHeight = rect.height;
 
-  ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  ctx.value = canvas.getContext("2d");
+  if (!ctx.value) return;
 
   const dpr = window.devicePixelRatio || 1;
   canvas.width = logicalWidth * dpr;
   canvas.height = logicalHeight * dpr;
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.value.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const computedStyle = getComputedStyle(canvas);
   const computedAccentColor = computedStyle
@@ -255,12 +255,12 @@ const setupCanvas = () => {
     .trim();
   accentColor.value = computedAccentColor || "#007aff"; // Fallback to a default blue
 
-  ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+  ctx.value.clearRect(0, 0, logicalWidth, logicalHeight);
   drawWaveform(logicalWidth, logicalHeight);
 };
 
 const drawWaveform = (width: number, height: number) => {
-  if (!ctx || !irBuffer.value) return;
+  if (!ctx.value || !irBuffer.value) return;
 
   const data = irBuffer.value.getChannelData(0);
   const step = Math.ceil(data.length / width);
@@ -280,10 +280,10 @@ const drawWaveform = (width: number, height: number) => {
 
   const verticalCenter = height / 2;
 
-  ctx.beginPath();
+  ctx.value.beginPath();
 
-  ctx.strokeStyle = accentColor.value;
-  ctx.lineWidth = 1.5;
+  ctx.value.strokeStyle = accentColor.value;
+  ctx.value.lineWidth = 1.5;
 
   for (let i = 0; i < width; i++) {
     let min = 0;
@@ -309,10 +309,10 @@ const drawWaveform = (width: number, height: number) => {
     const normalizedMin = min / maxAmplitude;
     const normalizedMax = max / maxAmplitude;
 
-    ctx.lineTo(i, verticalCenter + normalizedMin * verticalCenter);
-    ctx.lineTo(i, verticalCenter + normalizedMax * verticalCenter);
+    ctx.value.lineTo(i, verticalCenter + normalizedMin * verticalCenter);
+    ctx.value.lineTo(i, verticalCenter + normalizedMax * verticalCenter);
   }
-  ctx.stroke();
+  ctx.value.stroke();
 };
 
 watch(
@@ -323,8 +323,8 @@ watch(
     } else if (!newPath) {
       irBuffer.value = null;
       irFileName.value = "";
-      if (ctx && waveformCanvas.value) {
-        ctx.clearRect(
+      if (ctx.value && waveformCanvas.value) {
+        ctx.value.clearRect(
           0,
           0,
           waveformCanvas.value.width,
