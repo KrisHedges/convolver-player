@@ -26,12 +26,13 @@
     "test:run:coverage": "vitest --coverage --run"
   },
   "dependencies": {
-    "highlight.js": "^11.11.1"
+    "@convolver-player/core": "1.0.0"
   },
   "peerDependencies": {
     "vue": "^3.5.24"
   },
   "devDependencies": {
+    "highlight.js": "^11.11.1",
     "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/coverage-v8": "latest",

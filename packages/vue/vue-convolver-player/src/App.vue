@@ -6,10 +6,10 @@ import {
   nextTick,
   type ComponentPublicInstance,
 } from "vue";
+import { AudioContextManager } from "@convolver-player/core";
 import ConvolverPlayer from "./components/ConvolverPlayer.vue";
 import hljs from "highlight.js";
-import "highlight.js/styles/github.css"; // You can choose a different theme
-import { AudioContextManager } from "@convolver-player/core";
+import "highlight.js/styles/github.css";
 
 const codeBlocks = ref<HTMLElement[]>([]);
 const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
 &lt;script setup lang="ts"&gt;
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import ConvolverPlayer from './components/ConvolverPlayer.vue';
-import { AudioContextManager } from "@convolver-player/core";
+import { AudioContextManager } from "@convolver-player/core"; // CORRECTED IMPORT
 
 /** Setup an AudioContextManager to use for all players */
 let sharedAudioContextManager: AudioContextManager | null = null;

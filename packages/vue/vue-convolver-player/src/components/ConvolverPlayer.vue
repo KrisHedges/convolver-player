@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
-import {
+import { // CORRECTED IMPORT
   AudioContextManager,
   loadAudioBuffer,
   ConvolverProcessor,
