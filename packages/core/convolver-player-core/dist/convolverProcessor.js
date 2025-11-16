@@ -15,12 +15,9 @@ export class ConvolverProcessor {
         // Set initial mix to 100% wet if not provided, or use provided value
         this.setWetDryMix(options.wetGainValue !== undefined ? options.wetGainValue : 1);
     }
-    async play(buffer, wetGainValue = 1) {
+    async play(buffer) {
         // Stop any currently playing sound and clean up
         this.stop();
-        console.log("ConvolverProcessor: play called.");
-        console.log(`  Source buffer duration: ${buffer.duration.toFixed(2)}s`);
-        console.log(`  IR buffer duration: ${this.irBuffer.duration.toFixed(2)}s`);
         const bufferSource = this.audioContext.createBufferSource();
         bufferSource.buffer = buffer;
         this.activeBufferSource = bufferSource;
@@ -30,15 +27,12 @@ export class ConvolverProcessor {
         bufferSource.connect(this.convolverNode); // Connect to persistent convolverNode
         this.convolverNode.connect(this.wetGain); // Connect to persistent wetGain
         const scheduledStopTime = this.audioContext.currentTime + buffer.duration + this.irBuffer.duration + 0.5;
-        console.log(`  Scheduled bufferSource stop time: ${scheduledStopTime.toFixed(2)}s (relative to AudioContext.currentTime)`);
         bufferSource.start(0);
         bufferSource.stop(scheduledStopTime); // Schedule stop after convolution tail
         return new Promise((resolve) => {
             const totalDuration = buffer.duration + this.irBuffer.duration;
             const timeoutDelay = totalDuration * 1000 + 500;
-            console.log(`  setTimeout scheduled for: ${timeoutDelay.toFixed(2)}ms`);
             this.timeoutId = window.setTimeout(() => {
-                console.log("ConvolverProcessor: setTimeout cleanup executed.");
                 // wetGain and dryGain are persistent, only disconnect convolverNode
                 this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.activeBufferSource = null;
                 this.timeoutId = null;

@@ -12,7 +12,7 @@ export declare class ConvolverProcessor {
     private activeBufferSource;
     private timeoutId;
     constructor(options: ConvolverProcessorOptions);
-    play(buffer: AudioBuffer, wetGainValue?: number): Promise<void>;
+    play(buffer: AudioBuffer): Promise<void>;
     stop(): void;
     /**
      * Updates the impulse response buffer for the convolver.
