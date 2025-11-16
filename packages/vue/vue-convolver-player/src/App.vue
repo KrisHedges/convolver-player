@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
       <p>
         Here's the simplest use case a single instance of the <code>ConvolverPlayer</code> component. Just point it to your wav file to use and it will handle the AudioContext creation for you.
       </p>
-      <ConvolverPlayer ir-file-path="/ir.wav" />
+      <ConvolverPlayer ir-file-path="/demo/ir.wav" />
       <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;script&gt;
   /** The easiest use case just give it the file path */
@@ -62,7 +62,7 @@ onBeforeUnmount(() => {
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;ConvolverPlayer irFilePath="/ir.wav" /&gt;
+  &lt;ConvolverPlayer irFilePath="/demo/ir.wav" /&gt;
 &lt;/template&gt;
       </code></pre>
     </section>
@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
         <code>audioContext</code> prop for this purpose.
       </p>
       <template v-if="sharedAudioContext">
-        <ConvolverPlayer ir-file-path="/ir.wav" :audio-context="sharedAudioContext" />
+        <ConvolverPlayer ir-file-path="/demo/ir.wav" :audio-context="sharedAudioContext" />
         <ConvolverPlayer
           ir-file-path="/src/assets/sounds/click.wav"
           :audio-context="sharedAudioContext"
@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;ConvolverPlayer irFilePath="/ir.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/demo/ir.wav" :audioContext="sharedAudioContext" /&gt;
   &lt;ConvolverPlayer irFilePath="/src/assets/sounds/click.wav" :audioContext="sharedAudioContext" /&gt;
   &lt;ConvolverPlayer irFilePath="/src/assets/sounds/piano.wav" :audioContext="sharedAudioContext" /&gt;
   &lt;ConvolverPlayer irFilePath="/src/assets/sounds/guitar.wav" :audioContext="sharedAudioContext" /&gt;
