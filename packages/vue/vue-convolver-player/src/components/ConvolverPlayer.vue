@@ -4,8 +4,8 @@
       <button
         v-for="sound in testSounds"
         :key="sound.label"
-        @click="playTestSound(sound)"
         :disabled="!irBuffer"
+        @click="playTestSound(sound)"
       >
         <i class="lni lni-play"></i>
         {{ sound.label }}
@@ -21,12 +21,12 @@
       <div class="convolver-controls">
         <label for="wet-gain">Effect:</label>
         <input
-          type="range"
           id="wet-gain"
+          v-model="wetGainValue"
+          type="range"
           min="0"
           max="1"
           step="0.01"
-          v-model="wetGainValue"
           :style="`--value: ${Math.round(wetGainValue * 100)}%`"
         />
         <span key="wet-gain-display-key">{{ displayedWetGain }}</span>
@@ -44,17 +44,7 @@ import {
   setupCanvasContext,
   getAccentColor,
 } from "@convolver-player/core";
-
-interface TestSound {
-  label: string;
-  type: "sample";
-  path: string;
-}
-
-interface Props {
-  irFilePath: string;
-  audioContext?: AudioContext | null;
-}
+import type { TestSound, Props } from "../types";
 
 const props = defineProps<Props>();
 
@@ -146,16 +136,16 @@ watch(
 
     if (newPath) {
       await loadIR(newPath, audioContext);
-      if (irBuffer.value && convolverProcessor) {
-        convolverProcessor.updateIrBuffer(irBuffer.value);
-      } else if (irBuffer.value && !convolverProcessor) {
-        // This case should ideally not happen if onMounted initializes it correctly
-        // but provides a fallback if irBuffer is set before onMounted completes
-        convolverProcessor = new ConvolverProcessor({
-          audioContext: audioContext,
-          irBuffer: irBuffer.value,
-          wetGainValue: wetGainValue.value,
-        });
+      if (irBuffer.value) {
+        if (convolverProcessor) {
+          convolverProcessor.updateIrBuffer(irBuffer.value); // Call updateIrBuffer
+        } else {
+          convolverProcessor = new ConvolverProcessor({ // Initialize if not exists
+            audioContext: audioContext,
+            irBuffer: irBuffer.value,
+            wetGainValue: wetGainValue.value, // Pass wetGainValue
+          });
+        }
       }
     } else {
       irBuffer.value = null;
@@ -172,17 +162,19 @@ watch(
   { immediate: true }
 );
 
-watch(wetGainValue, (newValue: number) => {
-  if (convolverProcessor) {
-    convolverProcessor.setWetDryMix(newValue);
-  }
-});
+
 
 watch(irBuffer, () => {
   if (rafId) {
     window.cancelAnimationFrame(rafId);
   }
   rafId = window.requestAnimationFrame(setupCanvasAndDraw);
+});
+
+watch(wetGainValue, (newValue: number) => {
+  if (convolverProcessor) {
+    convolverProcessor.setWetDryMix(newValue);
+  }
 });
 
 let resizeObserver: ResizeObserver | null = null;

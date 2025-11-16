@@ -4,14 +4,15 @@ import {
   ref,
   onBeforeUnmount,
   nextTick,
-  type ComponentPublicInstance,
 } from "vue";
 import ConvolverPlayer from "./components/ConvolverPlayer.vue";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 
+const sharedAudioContext = ref<AudioContext | null>(null); // Declare sharedAudioContext here
+
 const codeBlocks = ref<HTMLElement[]>([]);
-const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
+const setCodeBlockRef = (el: Element | null) => {
   if (el && el instanceof HTMLElement) {
     codeBlocks.value.push(el);
   }
@@ -52,7 +53,7 @@ onBeforeUnmount(() => {
       <p>
         Here's the simplest use case a single instance of the <code>ConvolverPlayer</code> component. Just point it to your wav file to use and it will handle the AudioContext creation for you.
       </p>
-      <ConvolverPlayer irFilePath="/ir.wav" />
+      <ConvolverPlayer ir-file-path="/ir.wav" />
       <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;script&gt;
   /** The easiest use case just give it the file path */
@@ -75,19 +76,21 @@ onBeforeUnmount(() => {
         contexts. The <code>ConvolverPlayer</code> component accepts an
         <code>audioContext</code> prop for this purpose.
       </p>
-      <ConvolverPlayer irFilePath="/ir.wav" :audioContext="sharedAudioContext" />
-      <ConvolverPlayer
-        irFilePath="/src/assets/sounds/click.wav"
-        :audioContext="sharedAudioContext"
-      />
-      <ConvolverPlayer
-        irFilePath="/src/assets/sounds/piano.wav"
-        :audioContext="sharedAudioContext"
-      />
-      <ConvolverPlayer
-        irFilePath="/src/assets/sounds/guitar.wav"
-        :audioContext="sharedAudioContext"
-      />
+      <template v-if="sharedAudioContext">
+        <ConvolverPlayer ir-file-path="/ir.wav" :audio-context="sharedAudioContext" />
+        <ConvolverPlayer
+          ir-file-path="/src/assets/sounds/click.wav"
+          :audio-context="sharedAudioContext"
+        />
+        <ConvolverPlayer
+          ir-file-path="/src/assets/sounds/piano.wav"
+          :audio-context="sharedAudioContext"
+        />
+        <ConvolverPlayer
+          ir-file-path="/src/assets/sounds/guitar.wav"
+          :audio-context="sharedAudioContext"
+        />
+      </template>
       <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;script setup lang="ts"&gt;
 import { ref, onMounted, onBeforeUnmount } from 'vue';

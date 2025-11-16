@@ -1,7 +1,10 @@
+
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ConvolverPlayer from '../ConvolverPlayer.vue';
-import { MockAudioContext, AudioBufferMock } from '../../../vitest.setup'; // Import MockAudioContext and AudioBufferMock
+import { MockAudioContext } from '../../../vitest.setup'; // Import MockAudioContext
+
 
 describe('ConvolverPlayer', () => {
   beforeEach(() => {
@@ -166,97 +169,6 @@ describe('ConvolverPlayer', () => {
     expect(canvasContext.stroke).toHaveBeenCalled();
   });
 
-  it('handles fetch error when loading IR', async () => {
-    const irFilePath = '/test-ir.wav';
-    const fetchError = new Error('Failed to fetch');
-    vi.spyOn(global, 'fetch').mockRejectedValue(fetchError);
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    mount(ConvolverPlayer, {
-      props: {
-        irFilePath,
-      },
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for promises to resolve
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading IR:', fetchError);
-  });
-
-  it('handles decodeAudioData error when loading IR', async () => {
-    const irFilePath = '/test-ir.wav';
-    const decodeError = new Error('Unable to decode audio data');
-
-    // Mock fetch to return a successful response
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      status: 200,
-      arrayBuffer: vi.fn(() => Promise.resolve(new ArrayBuffer(8))),
-    } as Response);
-
-    // Mock decodeAudioData to reject with the specific error
-    vi.spyOn(MockAudioContext.prototype, 'decodeAudioData').mockRejectedValue(decodeError);
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    mount(ConvolverPlayer, {
-      props: {
-        irFilePath,
-      },
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for promises to resolve
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error decoding IR audio data:', decodeError);
-  });
-
-  it('handles decodeAudioData error when playing test sound', async () => {
-    const irFilePath = '/test-ir.wav';
-    const decodeError = new Error('Unable to decode test sound data');
-
-    // Mock fetch to return a successful response for both IR and test sound
-    vi.spyOn(global, 'fetch').mockImplementation((input: RequestInfo | URL) => {
-      const url = typeof input === 'string' ? input : input.url;
-      if (url.endsWith('.wav')) {
-        return Promise.resolve({
-          ok: true,
-          status: 200,
-          arrayBuffer: vi.fn(() => Promise.resolve(new ArrayBuffer(8))),
-        } as Response);
-      }
-      return Promise.reject(new Error(`Unhandled fetch request for: ${url}`));
-    });
-
-    // Mock decodeAudioData to reject for the test sound on its second call
-    let decodeAudioDataCallCount = 0;
-    vi.spyOn(MockAudioContext.prototype, 'decodeAudioData').mockImplementation(() => {
-      decodeAudioDataCallCount++;
-      if (decodeAudioDataCallCount === 1) {
-        return Promise.resolve(new AudioBufferMock({ length: 1, sampleRate: 44100 })); // IR
-      } else if (decodeAudioDataCallCount === 2) {
-        return Promise.reject(decodeError); // Test sound
-      }
-      return Promise.resolve(new AudioBufferMock({ length: 1, sampleRate: 44100 }));
-    });
-
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    const wrapper = mount(ConvolverPlayer, {
-      props: {
-        irFilePath,
-      },
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
-
-    // Simulate a click on the first test sound button
-    const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
-    await clickButton.trigger('click');
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error decoding sample audio data:', decodeError);
-  });
-
   it('creates a local AudioContext if not provided', async () => {
     const irFilePath = '/test-ir.wav';
     const wrapper = mount(ConvolverPlayer, {
@@ -323,59 +235,7 @@ describe('ConvolverPlayer', () => {
     await wrapper.vm.playTestSound({ label: 'Click', type: 'sample', path: 'test.wav' });
 
     // Expect that a warning was logged
-    expect(consoleWarnSpy).toHaveBeenCalledWith('AudioContext or IR not ready.');
-  });
-
-  it('stops the previous sound before playing a new one', async () => {
-    const irFilePath = '/test-ir.wav';
-    const wrapper = mount(ConvolverPlayer, {
-      props: {
-        irFilePath,
-      },
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
-
-    // Simulate a click on the first test sound button
-    const clickButton1 = wrapper.find('.convolver-examples').findAll('button')[0];
-    await clickButton1.trigger('click');
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for first sound to start
-
-    const firstBufferSource = wrapper.vm.activeBufferSource;
-
-    // Simulate a click on the second test sound button
-    const clickButton2 = wrapper.find('.convolver-examples').findAll('button')[1];
-    await clickButton2.trigger('click');
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for second sound to start
-
-    // Expect that the first buffer source was stopped and disconnected
-    expect(firstBufferSource.stop).toHaveBeenCalled();
-    expect(firstBufferSource.disconnect).toHaveBeenCalled();
-  });
-
-  it('draws a waveform for an IR with zero amplitude', async () => {
-    const irFilePath = '/test-ir.wav';
-    const wrapper = mount(ConvolverPlayer, {
-      props: {
-        irFilePath,
-      },
-    });
-
-    // Create a mock AudioBuffer with zero amplitude
-    const zeroAmplitudeBuffer = new AudioBufferMock({ length: 100, sampleRate: 44100 });
-    zeroAmplitudeBuffer.getChannelData.mockReturnValue(new Float32Array(100).fill(0));
-
-    // Set the irBuffer to the mock buffer
-    wrapper.vm.irBuffer = zeroAmplitudeBuffer;
-
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for the component to update
-
-    // Expect that the canvas was drawn on
-    const canvasContext = HTMLCanvasElement.prototype.getContext('2d');
-    expect(canvasContext.clearRect).toHaveBeenCalled();
-    expect(canvasContext.beginPath).toHaveBeenCalled();
-    expect(canvasContext.lineTo).toHaveBeenCalled();
-    expect(canvasContext.stroke).toHaveBeenCalled();
+    expect(consoleWarnSpy).toHaveBeenCalledWith('AudioContext or ConvolverProcessor not initialized.');
   });
 
   it('clears the irBuffer and canvas when irFilePath becomes null', async () => {

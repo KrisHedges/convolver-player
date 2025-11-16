@@ -1,7 +1,5 @@
 // packages/core/convolver-player-core/src/convolverProcessor.ts
 
-import { loadAudioBuffer } from "./audioLoader";
-
 export interface ConvolverProcessorOptions {
   audioContext: AudioContext;
   irBuffer: AudioBuffer;
@@ -10,10 +8,10 @@ export interface ConvolverProcessorOptions {
 
 export class ConvolverProcessor {
   private audioContext: AudioContext;
-  private convolverNode: ConvolverNode;
-  private wetGainNode: GainNode;
-  private dryGainNode: GainNode;
+  private convolverNode: ConvolverNode; // Reintroduce as class property
   private irBuffer: AudioBuffer;
+  private wetGain: GainNode; // Persistent wet gain node
+  private dryGain: GainNode; // Persistent dry gain node
 
   private activeBufferSource: AudioBufferSourceNode | null = null;
   private timeoutId: number | null = null;
@@ -21,81 +19,63 @@ export class ConvolverProcessor {
   constructor(options: ConvolverProcessorOptions) {
     this.audioContext = options.audioContext;
     this.irBuffer = options.irBuffer;
-    this.wetGainNode = this.audioContext.createGain();
-    this.dryGainNode = this.audioContext.createGain();
-    this.convolverNode = this.audioContext.createConvolver();
+    this.convolverNode = this.audioContext.createConvolver(); // Initialize here
+    this.convolverNode.buffer = this.irBuffer; // Set buffer here
 
-    // Connect the main processing chain
-    this.dryGainNode.connect(this.audioContext.destination);
-    this.convolverNode.connect(this.wetGainNode);
-    this.wetGainNode.connect(this.audioContext.destination);
+    this.wetGain = this.audioContext.createGain();
+    this.dryGain = this.audioContext.createGain();
 
-    this.convolverNode.buffer = this.irBuffer;
-    this.setWetDryMix(options.wetGainValue ?? 1); // Default to 100% wet
+    // Connect persistent nodes to destination
+    this.wetGain.connect(this.audioContext.destination);
+    this.dryGain.connect(this.audioContext.destination);
+
+    // Set initial mix to 100% wet if not provided, or use provided value
+    this.setWetDryMix(options.wetGainValue !== undefined ? options.wetGainValue : 1);
   }
 
-  /**
-   * Sets the wet/dry mix for the convolver effect.
-   * @param wetGainValue A value between 0 and 1, where 1 is 100% wet and 0 is 100% dry.
-   */
-  public setWetDryMix(wetGainValue: number): void {
-    this.wetGainNode.gain.value = wetGainValue;
-    this.dryGainNode.gain.value = 1 - wetGainValue;
-  }
-
-  /**
-   * Plays an AudioBuffer through the convolver effect.
-   * @param buffer The AudioBuffer to play.
-   * @returns A Promise that resolves when the sound has finished playing and resources are cleaned up.
-   */
   public async play(buffer: AudioBuffer): Promise<void> {
     // Stop any currently playing sound and clean up
     this.stop();
+
+
+
 
     const bufferSource = this.audioContext.createBufferSource();
     bufferSource.buffer = buffer;
     this.activeBufferSource = bufferSource;
 
-    // Connect graph: source -> dryGain
-    //              source -> convolver
-    bufferSource.connect(this.dryGainNode);
-    bufferSource.connect(this.convolverNode);
+    // Connect graph: source -> dryGain -> destination
+    //              source -> convolver -> wetGain -> destination
+    bufferSource.connect(this.dryGain); // Connect to persistent dryGain
 
+    bufferSource.connect(this.convolverNode); // Connect to persistent convolverNode
+    this.convolverNode.connect(this.wetGain); // Connect to persistent wetGain
+
+    const scheduledStopTime = this.audioContext.currentTime + buffer.duration + this.irBuffer.duration + 0.5;
     bufferSource.start(0);
+    bufferSource.stop(scheduledStopTime); // Schedule stop after convolution tail
 
     return new Promise((resolve) => {
-      bufferSource.onended = () => {
-        this.stop();
-        resolve();
-      };
-
-      // Set a timeout for cleanup in case onended doesn't fire or for very long IRs
       const totalDuration = buffer.duration + this.irBuffer.duration;
-      this.timeoutId = window.setTimeout(() => {
-        this.stop();
-        resolve();
-      }, totalDuration * 1000 + 500); // Add a small buffer
-    });
-  }
+      const timeoutDelay = totalDuration * 1000 + 500;
 
-  /**
-   * Stops any currently playing sound and disconnects only the active buffer source.
-   */
+      this.timeoutId = window.setTimeout(() => {
+                  // wetGain and dryGain are persistent, only disconnect convolverNode
+                  this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.activeBufferSource = null;
+        this.timeoutId = null;
+        resolve();
+      }, timeoutDelay);
+    });
+  } // Closing brace for the play method
+
   public stop(): void {
     if (this.timeoutId !== null) {
       window.clearTimeout(this.timeoutId);
       this.timeoutId = null;
     }
 
-    if (this.activeBufferSource) {
-      try {
-        this.activeBufferSource.stop();
-        this.activeBufferSource.disconnect();
-      } catch (e) {
-        console.warn("Could not stop/disconnect previous buffer source:", e);
-      }
-      this.activeBufferSource = null;
-    }
+    // activeBufferSource is stopped by scheduled stop, just clear reference
+    this.activeBufferSource = null;
   }
 
   /**
@@ -108,13 +88,20 @@ export class ConvolverProcessor {
   }
 
   /**
-   * Disconnects all internal nodes from the audio graph.
-   * Should be called when the processor is no longer needed.
+   * Sets the wet/dry mix for the convolver effect.
+   * @param wetGainValue A value between 0 (100% dry) and 1 (100% wet).
    */
+  public setWetDryMix(wetGainValue: number): void {
+    this.wetGain.gain.value = wetGainValue;
+    this.dryGain.gain.value = 1 - wetGainValue;
+  }
+
+
+
   public dispose(): void {
     this.stop();
-    this.convolverNode.disconnect();
-    this.wetGainNode.disconnect();
-    this.dryGainNode.disconnect();
+    this.convolverNode.disconnect(); // Disconnect persistent convolverNode
+    this.wetGain.disconnect(); // Disconnect persistent wetGain
+    this.dryGain.disconnect(); // Disconnect persistent dryGain
   }
 }
