@@ -25,7 +25,9 @@
     "test:coverage": "vitest --coverage",
     "test:run:coverage": "vitest --coverage --run"
   },
-  "dependencies": {},
+  "dependencies": {
+    "highlight.js": "^11.11.1"
+  },
   "peerDependencies": {
     "vue": "^3.5.24"
   },
