@@ -12,7 +12,11 @@
       </button>
     </div>
     <div class="convolver-ir">
-
+      <span v-if="irBuffer" class="convolver-ir-info">
+        Duration: {{ irBuffer.duration.toFixed(2) }}s, Sample Rate:
+        {{ irBuffer.sampleRate }}Hz, Channels: {{ irBuffer.numberOfChannels }}
+      </span>
+      <span v-else>Loading IR...</span>
       <canvas ref="waveformCanvas" class="convolver-waveform-canvas"></canvas>
       <div class="convolver-controls">
         <label for="wet-gain">Effect:</label>
@@ -68,6 +72,8 @@ const wetGainValue = ref<number>(1); // Initial wet gain value (100% wet)
 const displayedWetGain = computed<string>(() => {
   return String((wetGainValue.value * 100).toFixed(0)) + "%";
 });
+
+
 
 import click from "../assets/sounds/click.wav";
 import piano from "../assets/sounds/piano.wav";
