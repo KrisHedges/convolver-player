@@ -24,17 +24,6 @@ In its simplest form, you can use the `ConvolverPlayer` component by just provid
 <script setup>
 import { ConvolverPlayer } from '@convolver-player/vue';
 </script>
-
-<style scoped>
-/* Example styling for the ConvolverPlayer component */
-.convolver-player {
-  /* Your styles here */
-}
-.waveform-canvas {
-  /* Your styles here */
-}
-/* ... other styles ... */
-</style>
 ```
 
 ### Advanced Usage: Shared `AudioContext`
@@ -68,14 +57,63 @@ onUnmounted(() => {
   }
 });
 </script>
+```
 
-<style scoped>
-/* Example styling for the ConvolverPlayer components */
+## Styling Guide
+
+The `ConvolverPlayer` component is intentionally unstyled to give you full control over its appearance. You can apply styles using standard CSS, targeting its internal class structure.
+
+Here's an example of how you might style the component, based on the demo application's `App.vue`:
+
+```css
 .convolver-player {
-  /* Your styles here */
+  display: grid;
+  grid-template-columns: 2fr 5fr;
+  column-gap: 1em;
+  row-gap: 0;
+  padding: 3em;
+  margin: 1em 0;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 5px;
+  height: fit-content;
+  box-shadow: 0 0 0.95px ButtonBorder; /* Using system color for shadow */
 }
-/* ... other styles ... */
-</style>
+
+.convolver-player .examples {
+  display: grid;
+  gap: 1em;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+.convolver-player .examples button {
+  height: 100%;
+}
+
+.convolver-player .ir {
+  display: grid;
+  align-items: center;
+  row-gap: .5em;
+}
+
+.convolver-player .ir .info {
+  align-content: center;
+  height: 32px;
+}
+
+.convolver-player .ir .waveform-section .waveform-canvas {
+  width: 100%;
+  height: 100px;
+  background-color: Canvas; /* Using system color for background */
+  box-shadow: 0 0 0.95px ButtonBorder; /* Using system color for shadow */
+}
+
+.convolver-player .ir .controls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+}
+
+/* You can further style elements like labels, input[type="range"], and spans within .controls */
 ```
 
 ## Props
