@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/vue/*",
-    "packages/core/*"
+    "packages/core/*",
+    "packages/react/*"
   ],
   "scripts": {
     "dev": "yarn workspace @convolver-player/vue dev",
