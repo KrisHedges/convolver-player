@@ -25,6 +25,11 @@ export class ConvolverProcessor {
     this.dryGainNode = this.audioContext.createGain();
     this.convolverNode = this.audioContext.createConvolver();
 
+    // Connect the main processing chain
+    this.dryGainNode.connect(this.audioContext.destination);
+    this.convolverNode.connect(this.wetGainNode);
+    this.wetGainNode.connect(this.audioContext.destination);
+
     this.convolverNode.buffer = this.irBuffer;
     this.setWetDryMix(options.wetGainValue ?? 1); // Default to 100% wet
   }
@@ -51,14 +56,10 @@ export class ConvolverProcessor {
     bufferSource.buffer = buffer;
     this.activeBufferSource = bufferSource;
 
-    // Connect graph: source -> dryGain -> destination
-    //              source -> convolver -> wetGain -> destination
+    // Connect graph: source -> dryGain
+    //              source -> convolver
     bufferSource.connect(this.dryGainNode);
-    this.dryGainNode.connect(this.audioContext.destination);
-
     bufferSource.connect(this.convolverNode);
-    this.convolverNode.connect(this.wetGainNode);
-    this.wetGainNode.connect(this.audioContext.destination);
 
     bufferSource.start(0);
 
@@ -78,7 +79,7 @@ export class ConvolverProcessor {
   }
 
   /**
-   * Stops any currently playing sound and disconnects all nodes.
+   * Stops any currently playing sound and disconnects only the active buffer source.
    */
   public stop(): void {
     if (this.timeoutId !== null) {
@@ -95,11 +96,6 @@ export class ConvolverProcessor {
       }
       this.activeBufferSource = null;
     }
-
-    // Disconnect all nodes from destination and each other
-    this.dryGainNode.disconnect();
-    this.wetGainNode.disconnect();
-    this.convolverNode.disconnect();
   }
 
   /**

@@ -37,8 +37,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
-import { // CORRECTED IMPORT
-  AudioContextManager,
+import {
   loadAudioBuffer,
   ConvolverProcessor,
   drawWaveform,
@@ -59,8 +58,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
-let audioContextManager: AudioContextManager | null = null;
 let convolverProcessor: ConvolverProcessor | null = null;
+
+const localAudioContext = ref<AudioContext | null>(null);
 
 const irBuffer = ref<AudioBuffer | null>(null);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
@@ -100,17 +100,17 @@ const loadIR = async (path: string, audioContext: AudioContext) => {
 
 // Function to generate and play a test sound through the IR
 const playTestSound = async (soundConfig: TestSound) => {
-  if (!audioContextManager || !convolverProcessor) {
-    console.warn("AudioContextManager or ConvolverProcessor not initialized.");
+  const audioContext = props.audioContext || localAudioContext.value;
+
+  if (!audioContext || !convolverProcessor) {
+    console.warn("AudioContext or ConvolverProcessor not initialized.");
     return;
   }
 
-  const audioContext = await audioContextManager.getAudioContext();
-  if (!audioContext) {
-    console.error("No AudioContext available.");
-    return;
+  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
   }
-  await audioContextManager.resumeAudioContext();
 
   if (!irBuffer.value) {
     console.warn("IR not ready.");
@@ -140,8 +140,8 @@ const setupCanvasAndDraw = () => {
 watch(
   () => props.irFilePath,
   async (newPath) => {
-    if (!audioContextManager) return;
-    const audioContext = await audioContextManager.getAudioContext();
+    const audioContext = props.audioContext || localAudioContext.value;
+
     if (!audioContext) return;
 
     if (newPath) {
@@ -188,13 +188,22 @@ watch(irBuffer, () => {
 let resizeObserver: ResizeObserver | null = null;
 
 onMounted(async () => {
-  audioContextManager = new AudioContextManager(props.audioContext);
-  const audioContext = await audioContextManager.getAudioContext();
+  let audioContext: AudioContext;
+  if (props.audioContext) {
+    audioContext = props.audioContext;
+  } else {
+    localAudioContext.value = new AudioContext();
+    audioContext = localAudioContext.value;
+  }
+
   if (!audioContext) {
     console.error("AudioContext is not supported in this browser.");
     return;
   }
-  await audioContextManager.resumeAudioContext();
+  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
 
   // Initialize convolverProcessor here if irFilePath is already set
   if (props.irFilePath && !convolverProcessor) {
@@ -230,8 +239,8 @@ onBeforeUnmount(() => {
   if (convolverProcessor) {
     convolverProcessor.dispose();
   }
-  if (audioContextManager) {
-    audioContextManager.closeLocalAudioContext();
+  if (localAudioContext.value) { // Check if local context exists
+    localAudioContext.value.close(); // Close local context
   }
 });
 </script>

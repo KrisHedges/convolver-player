@@ -6,7 +6,6 @@ import {
   nextTick,
   type ComponentPublicInstance,
 } from "vue";
-import { AudioContextManager } from "@convolver-player/core";
 import ConvolverPlayer from "./components/ConvolverPlayer.vue";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
@@ -26,23 +25,20 @@ onMounted(() => {
   });
 });
 
-// Create a single AudioContextManager to be shared across multiple ConvolverPlayer instances.
-// This is good practice to prevent resource exhaustion and performance issues.
-let sharedAudioContextManager: AudioContextManager | null = null;
-const sharedAudioContext = ref<AudioContext | null>(null);
-
 onMounted(async () => {
-  sharedAudioContextManager = new AudioContextManager();
-  const context = await sharedAudioContextManager.getAudioContext();
-  if (context) {
-    sharedAudioContext.value = context;
-    await sharedAudioContextManager.resumeAudioContext();
+  // Create a new AudioContext for shared use
+  const context = new AudioContext();
+  sharedAudioContext.value = context;
+
+  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+  if (context.state === 'suspended') {
+    await context.resume();
   }
 });
 
 onBeforeUnmount(() => {
-  if (sharedAudioContextManager) {
-    sharedAudioContextManager.closeLocalAudioContext();
+  if (sharedAudioContext.value) {
+    sharedAudioContext.value.close();
   }
 });
 </script>
@@ -58,8 +54,14 @@ onBeforeUnmount(() => {
       </p>
       <ConvolverPlayer irFilePath="/ir.wav" />
       <pre><code :ref="setCodeBlockRef" class="language-html">
-&lt;!-- The easiest of uses just give your ir file path --&gt
-&lt;ConvolverPlayer irFilePath="/ir.wav" /&gt;
+&lt;script&gt;
+  /** The easiest use case just give it the file path */
+  import ConvolverPlayer from './components/ConvolverPlayer.vue';
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;ConvolverPlayer irFilePath="/ir.wav" /&gt;
+&lt;/template&gt;
       </code></pre>
     </section>
 
@@ -90,25 +92,22 @@ onBeforeUnmount(() => {
 &lt;script setup lang="ts"&gt;
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import ConvolverPlayer from './components/ConvolverPlayer.vue';
-import { AudioContextManager } from "@convolver-player/core"; // CORRECTED IMPORT
 
-/** Setup an AudioContextManager to use for all players */
-let sharedAudioContextManager: AudioContextManager | null = null;
+/** Setup a shared AudioContext to use for all players */
 const sharedAudioContext = ref&lt;AudioContext | null&gt;(null);
 
 onMounted(async () => {
-  sharedAudioContextManager = new AudioContextManager();
-  const context = await sharedAudioContextManager.getAudioContext();
-  if (context) {
-    sharedAudioContext.value = context;
-    await sharedAudioContextManager.resumeAudioContext();
+  const context = new AudioContext();
+  sharedAudioContext.value = context;
+  if (context.state === 'suspended') {
+    await context.resume();
   }
 });
 
 /** Cleanup AudioContext when unmounted */
 onBeforeUnmount(() => {
-  if (sharedAudioContextManager) {
-    sharedAudioContextManager.closeLocalAudioContext();
+  if (sharedAudioContext.value) {
+    sharedAudioContext.value.close();
   }
 });
 &lt;/script&gt;
