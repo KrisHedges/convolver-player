@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "yarn workspace @convolver-player/vue dev",
     "build": "yarn workspaces foreach run build",
-    "test": "yarn workspaces foreach run test",
-    "test:coverage": "yarn workspaces foreach run test:coverage"
+    "test": "yarn workspaces run test",
+    "test:coverage": "yarn workspaces run test:coverage"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.9",
