@@ -97,16 +97,28 @@ const ConvolverPlayer: React.FC<Props> = ({ irFilePath, audioContext: providedAu
   }, [wetGainValue]);
 
   useEffect(() => {
+    console.log('Component mounted');
     if (!providedAudioContext) {
+      console.log('Creating new AudioContext');
       const newAudioContext = new AudioContext();
       setLocalAudioContext(newAudioContext);
     }
+
+    return () => {
+      console.log('Component unmounting');
+      if (localAudioContext) {
+        console.log('Closing local AudioContext');
+        localAudioContext.close();
+      }
+    };
   }, [providedAudioContext]);
 
   useEffect(() => {
     const audioContext = providedAudioContext || localAudioContext;
+    console.log('irBuffer or audioContext changed', irBuffer, audioContext);
 
     if (irBuffer && audioContext) {
+      console.log('Creating new ConvolverProcessor');
       convolverProcessor.current = new ConvolverProcessor({
         audioContext,
         irBuffer,
@@ -116,10 +128,8 @@ const ConvolverPlayer: React.FC<Props> = ({ irFilePath, audioContext: providedAu
 
     return () => {
       if (convolverProcessor.current) {
+        console.log('Disposing ConvolverProcessor');
         convolverProcessor.current.dispose();
-      }
-      if (localAudioContext) {
-        localAudioContext.close();
       }
     };
   }, [providedAudioContext, localAudioContext, irBuffer, wetGainValue]);
