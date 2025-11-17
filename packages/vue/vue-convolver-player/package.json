@@ -26,7 +26,8 @@
     "test:run:coverage": "vitest --coverage --run",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx",
-    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix"
+    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,vue,html,md}\""
   },
   "dependencies": {
     "@convolver-player/core": "1.0.0"
