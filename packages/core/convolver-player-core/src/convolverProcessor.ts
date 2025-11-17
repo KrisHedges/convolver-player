@@ -1,5 +1,3 @@
-// packages/core/convolver-player-core/src/convolverProcessor.ts
-
 export interface ConvolverProcessorOptions {
   audioContext: AudioContext;
   irBuffer: AudioBuffer;
