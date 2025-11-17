@@ -20,7 +20,10 @@ const testSounds: TestSound[] = [
   { label: 'Snare', type: 'sample', path: snareSound },
 ];
 
-const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioContext: propAudioContext }) => {
+const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
+  irFilePath,
+  audioContext: propAudioContext,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const convolverProcessorRef = useRef<ConvolverProcessor | null>(null);
   const localAudioContextRef = useRef<AudioContext | null>(null);
@@ -43,7 +46,6 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
     const audioContext: AudioContext = getAudioContext();
     if (!audioContext) return;
     setIsAudioContextReady(true);
-
   }, [getAudioContext]);
 
   useEffect(() => {
@@ -105,7 +107,9 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
       try {
         const buffer = await loadAudioBuffer(currentAudioContext, irFilePath);
         setIrBuffer(buffer);
-        setIrInfo(`Duration: ${buffer.duration.toFixed(2)}s, Sample Rate: ${buffer.sampleRate}Hz, Channels: ${buffer.numberOfChannels}`);
+        setIrInfo(
+          `Duration: ${buffer.duration.toFixed(2)}s, Sample Rate: ${buffer.sampleRate}Hz, Channels: ${buffer.numberOfChannels}`
+        );
         convolverProcessorRef.current?.updateIrBuffer(buffer);
         if (canvasRef.current) {
           const color = getAccentColor(canvasRef.current || document.body);
@@ -124,23 +128,26 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
     loadIr();
   }, [irFilePath, getAudioContext]);
 
-  const playTestSound = useCallback(async (soundPath: string) => {
-    const audioContext = getAudioContext();
-    // Resume AudioContext if suspended, as this is a user gesture
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume();
-    }
-    if (!audioContext || !convolverProcessorRef.current || !irBuffer) {
-      console.warn('AudioContext, ConvolverProcessor, or IR buffer not ready.');
-      return;
-    }
-    try {
-      const soundBuffer = await loadAudioBuffer(audioContext, soundPath);
-      convolverProcessorRef.current.play(soundBuffer);
-    } catch (error) {
-      console.error('Error playing test sound:', error);
-    }
-  }, [getAudioContext, irBuffer]);
+  const playTestSound = useCallback(
+    async (soundPath: string) => {
+      const audioContext = getAudioContext();
+      // Resume AudioContext if suspended, as this is a user gesture
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+      if (!audioContext || !convolverProcessorRef.current || !irBuffer) {
+        console.warn('AudioContext, ConvolverProcessor, or IR buffer not ready.');
+        return;
+      }
+      try {
+        const soundBuffer = await loadAudioBuffer(audioContext, soundPath);
+        convolverProcessorRef.current.play(soundBuffer);
+      } catch (error) {
+        console.error('Error playing test sound:', error);
+      }
+    },
+    [getAudioContext, irBuffer]
+  );
 
   const handleWetDryMixChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const mix = parseFloat(event.target.value);
@@ -162,10 +169,13 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
         ))}
       </div>
       <div className="convolver-ir">
-        <span className="convolver-ir-info">
-          {irInfo}
-        </span>
-        <canvas ref={canvasRef} width="300" height="150" className="convolver-waveform-canvas"></canvas>
+        <span className="convolver-ir-info">{irInfo}</span>
+        <canvas
+          ref={canvasRef}
+          width="300"
+          height="150"
+          className="convolver-waveform-canvas"
+        ></canvas>
         <div className="convolver-controls">
           <label htmlFor="wetDryMix">Wet/Dry Mix:</label>
           <input

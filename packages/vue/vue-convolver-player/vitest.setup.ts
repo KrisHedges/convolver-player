@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Mock ResizeObserver
 class ResizeObserverMock {
@@ -7,14 +7,14 @@ class ResizeObserverMock {
   disconnect = vi.fn();
 }
 
-vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
 // Mock HTMLCanvasElement.prototype.getContext
 const mockCanvasContext = {
   clearRect: vi.fn(),
   setTransform: vi.fn(),
   beginPath: vi.fn(),
-  strokeStyle: "",
+  strokeStyle: '',
   lineWidth: 0,
   lineTo: vi.fn(),
   stroke: vi.fn(),
@@ -53,7 +53,7 @@ export class AudioBufferMock {
   });
   duration = 0.1; // Add a dummy duration
 }
-vi.stubGlobal("AudioBuffer", AudioBufferMock);
+vi.stubGlobal('AudioBuffer', AudioBufferMock);
 
 // Mock AudioContext
 export class MockAudioContext {
@@ -88,14 +88,14 @@ MockAudioContext.prototype.resume = vi.fn();
 MockAudioContext.prototype.close = vi.fn();
 MockAudioContext.prototype.state = 'running';
 
-vi.stubGlobal("AudioContext", MockAudioContext);
-vi.stubGlobal("webkitAudioContext", MockAudioContext);
+vi.stubGlobal('AudioContext', MockAudioContext);
+vi.stubGlobal('webkitAudioContext', MockAudioContext);
 
 // Mock fetch to return a mocked Response object
 global.fetch = vi.fn((input: RequestInfo | URL) => {
-  const url = typeof input === "string" ? input : input.url;
+  const url = typeof input === 'string' ? input : input.url;
   // Simulate a successful response for any audio file
-  if (url.endsWith(".wav")) {
+  if (url.endsWith('.wav')) {
     return Promise.resolve({
       ok: true,
       status: 200,

@@ -17,8 +17,14 @@ export default defineConfig({
   resolve: {
     preserveSymlinks: true,
     alias: {
-      '@convolver-player/core': resolve(__dirname, '../../../core/convolver-player-core/dist/index.js'),
-      '@testing-library/jest-dom': resolve(__dirname, '../../../node_modules/@testing-library/jest-dom'),
+      '@convolver-player/core': resolve(
+        __dirname,
+        '../../../core/convolver-player-core/dist/index.js'
+      ),
+      '@testing-library/jest-dom': resolve(
+        __dirname,
+        '../../../node_modules/@testing-library/jest-dom'
+      ),
     },
   },
 });

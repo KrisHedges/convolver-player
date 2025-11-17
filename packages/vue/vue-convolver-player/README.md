@@ -22,7 +22,7 @@ In its simplest form, you can use the `ConvolverPlayer` component by just provid
 </template>
 
 <script setup>
-import { ConvolverPlayer } from '@convolver-player/vue';
+  import { ConvolverPlayer } from '@convolver-player/vue';
 </script>
 ```
 
@@ -39,23 +39,23 @@ For more complex scenarios where you have multiple `ConvolverPlayer` components 
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { ConvolverPlayer } from '@convolver-player/vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ConvolverPlayer } from '@convolver-player/vue';
 
-const sharedAudioContext = ref(null);
+  const sharedAudioContext = ref(null);
 
-onMounted(() => {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (AudioContext) {
-    sharedAudioContext.value = new AudioContext();
-  }
-});
+  onMounted(() => {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      sharedAudioContext.value = new AudioContext();
+    }
+  });
 
-onUnmounted(() => {
-  if (sharedAudioContext.value && sharedAudioContext.value.state !== 'closed') {
-    sharedAudioContext.value.close();
-  }
-});
+  onUnmounted(() => {
+    if (sharedAudioContext.value && sharedAudioContext.value.state !== 'closed') {
+      sharedAudioContext.value.close();
+    }
+  });
 </script>
 ```
 
@@ -73,7 +73,7 @@ Here's an example of how you might style the component, based on the demo applic
   row-gap: 0;
   padding: 3em;
   margin: 1em 0;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   height: fit-content;
   box-shadow: 0 0 0.95px ButtonBorder; /* Using system color for shadow */
@@ -93,7 +93,7 @@ Here's an example of how you might style the component, based on the demo applic
 .convolver-player .ir {
   display: grid;
   align-items: center;
-  row-gap: .5em;
+  row-gap: 0.5em;
 }
 
 .convolver-player .ir .info {
@@ -118,7 +118,7 @@ Here's an example of how you might style the component, based on the demo applic
 
 ## Props
 
-| Prop           | Type          | Description                                                                                             |
-| -------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
-| `irFilePath`   | `String`      | The path to the impulse response file.                                                                  |
-| `audioContext` | `AudioContext`| An optional, pre-existing `AudioContext` to use. If not provided, the component will create its own. |
+| Prop           | Type           | Description                                                                                          |
+| -------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
+| `irFilePath`   | `String`       | The path to the impulse response file.                                                               |
+| `audioContext` | `AudioContext` | An optional, pre-existing `AudioContext` to use. If not provided, the component will create its own. |

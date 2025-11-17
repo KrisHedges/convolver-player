@@ -47,7 +47,6 @@ function App() {
     });
   }, [sharedAudioContext]); // Re-highlight if sharedAudioContext changes (though it shouldn't after initial load)
 
-
   const singleUseCode = `
 import React from 'react';
 import { ConvolverPlayer } from '@convolver-player/react';
@@ -106,7 +105,6 @@ function MyMultiPlayerComponent() {
 }
 `;
 
-
   return (
     <div className="container">
       <h1>Convolver Player Demo (React)</h1>
@@ -114,9 +112,9 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Single Use Example</h2>
         <p>
-          Here's the simplest use case: a single instance of the{' '}
-          <code>ConvolverPlayer</code> component. Just point it to your wav file
-          to use, and it will handle the AudioContext creation for you.
+          Here's the simplest use case: a single instance of the <code>ConvolverPlayer</code>{' '}
+          component. Just point it to your wav file to use, and it will handle the AudioContext
+          creation for you.
         </p>
         <ConvolverPlayer irFilePath={irFile} />
         <pre>
@@ -129,18 +127,21 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Multi-Use Example (Shared AudioContext)</h2>
         <p>
-          When using multiple <code>ConvolverPlayer</code> components on the same
-          page, it's best practice to share a single{' '}
-          <code>AudioContext</code> instance. This prevents resource exhaustion
-          and potential performance issues that can arise from creating multiple
-          contexts. The <code>ConvolverPlayer</code> component accepts an{' '}
-          <code>audioContext</code> prop for this purpose.
+          When using multiple <code>ConvolverPlayer</code> components on the same page, it's best
+          practice to share a single <code>AudioContext</code> instance. This prevents resource
+          exhaustion and potential performance issues that can arise from creating multiple
+          contexts. The <code>ConvolverPlayer</code> component accepts an <code>audioContext</code>{' '}
+          prop for this purpose.
         </p>
         {sharedAudioContext ? (
           <>
             <ConvolverPlayer irFilePath={irFile} audioContext={sharedAudioContext} />
             {testSounds.map((sound, index) => (
-              <ConvolverPlayer key={index} irFilePath={sound.path} audioContext={sharedAudioContext} />
+              <ConvolverPlayer
+                key={index}
+                irFilePath={sound.path}
+                audioContext={sharedAudioContext}
+              />
             ))}
           </>
         ) : (
@@ -156,8 +157,8 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Component Structure</h2>
         <p>
-          The component's class structure can be targeted with your CSS. Here's
-          a breakdown of the main elements:
+          The component's class structure can be targeted with your CSS. Here's a breakdown of the
+          main elements:
         </p>
         <pre>
           <code ref={setCodeBlockRef} className="language-html">
@@ -184,14 +185,13 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Styling Example</h2>
         <p>
-          Below is the CSS used in this demo application to style the{' '}
-          <code>ConvolverPlayer</code> component. You can adapt these styles or
-          create your own to match your application's theme.
+          Below is the CSS used in this demo application to style the <code>ConvolverPlayer</code>{' '}
+          component. You can adapt these styles or create your own to match your application's
+          theme.
         </p>
         <p>
-          The waveform itself will attempt to use the browser's{' '}
-          <code>accent-color</code> for its primary color. If{' '}
-          <code>accent-color</code> is not available, it will fall back to a
+          The waveform itself will attempt to use the browser's <code>accent-color</code> for its
+          primary color. If <code>accent-color</code> is not available, it will fall back to a
           default blue (<code>#007aff</code>).
         </p>
         <pre>
