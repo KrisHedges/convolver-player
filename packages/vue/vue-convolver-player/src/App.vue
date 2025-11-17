@@ -23,7 +23,7 @@
 
   onMounted(async () => {
     // Create a new AudioContext for shared use
-    const context = new AudioContext();
+    const context = new (window.AudioContext || window.webkitAudioContext)();
     sharedAudioContext.value = context;
 
     // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
@@ -95,11 +95,8 @@ import ConvolverPlayer from './components/ConvolverPlayer.vue';
 const sharedAudioContext = ref&lt;AudioContext | null&gt;(null);
 
 onMounted(async () => {
-  const context = new AudioContext();
+  const context = new (window.AudioContext || window.webkitAudioContext)();
   sharedAudioContext.value = context;
-  if (context.state === 'suspended') {
-    await context.resume();
-  }
 });
 
 /** Cleanup AudioContext when unmounted */
@@ -111,10 +108,9 @@ onBeforeUnmount(() => {
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;ConvolverPlayer irFilePath="/demo/ir.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/click.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/piano.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/guitar.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir1.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir2.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir3.wav" :audioContext="sharedAudioContext" /&gt;
 &lt;/template&gt;
       </code></pre>
     </section>

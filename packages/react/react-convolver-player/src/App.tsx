@@ -1,21 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ConvolverPlayer from './components/ConvolverPlayer';
 import './index.css';
-import irFile from '../demo/ir.wav'; // Keep irFile in demo for now
-
-import clickSound from './assets/sounds/click.wav';
-import guitarSound from './assets/sounds/guitar.wav';
-import pianoSound from './assets/sounds/piano.wav';
-import snareSound from './assets/sounds/snare.wav';
-
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // Or any other theme you prefer
 
 const testSounds = [
-  { label: 'Click', path: clickSound },
-  { label: 'Guitar', path: guitarSound },
-  { label: 'Piano', path: pianoSound },
-  { label: 'Snare', path: snareSound },
+  { label: 'Click', path: '/src/assets/sounds/click.wav'},
+  { label: 'Guitar', path: '/src/assets/sounds/guitar.wav' },
+  { label: 'Piano', path: '/src/assets/sounds/piano.wav' },
+  { label: 'Snare', path: '/src/assets/sounds/snare.wav' },
 ];
 
 function App() {
@@ -48,39 +41,26 @@ function App() {
   }, [sharedAudioContext]); // Re-highlight if sharedAudioContext changes (though it shouldn't after initial load)
 
   const singleUseCode = `
-import React from 'react';
 import { ConvolverPlayer } from '@convolver-player/react';
-import irFile from './ir.wav'; // Your impulse response file
 
 function MyComponent() {
   return (
-    <ConvolverPlayer irFilePath={irFile} />
+    <ConvolverPlayer irFilePath="/path/to/your/ir.wav" />
   );
 }
 `;
 
   const multiUseCode = `
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ConvolverPlayer } from '@convolver-player/react';
-import irFile from './ir.wav'; // Your impulse response file
-import clickSound from './assets/sounds/click.wav'; // Example test sound
-
-const testSounds = [
-  { label: 'Click', path: clickSound },
-  // ... other sounds
-];
 
 function MyMultiPlayerComponent() {
   const [sharedAudioContext, setSharedAudioContext] = useState<AudioContext | null>(null);
 
+  // Setup an AudioContext to use for all of the players
   useEffect(() => {
     const context = new (window.AudioContext || window.webkitAudioContext)();
     setSharedAudioContext(context);
-
-    if (context.state === 'suspended') {
-      context.resume();
-    }
-
     return () => {
       if (context && context.state !== 'closed') {
         context.close();
@@ -92,10 +72,9 @@ function MyMultiPlayerComponent() {
     <>
       {sharedAudioContext ? (
         <>
-          <ConvolverPlayer irFilePath={irFile} audioContext={sharedAudioContext} />
-          {testSounds.map((sound, index) => (
-            <ConvolverPlayer key={index} irFilePath={sound.path} audioContext={sharedAudioContext} />
-          ))}
+          <ConvolverPlayer irFilePath="/path/to/your/ir1.wav" audioContext={sharedAudioContext} />
+          <ConvolverPlayer irFilePath="/path/to/your/ir2.wav" audioContext={sharedAudioContext} />
+          <ConvolverPlayer irFilePath="/path/to/your/ir3.wav" audioContext={sharedAudioContext} />
         </>
       ) : (
         <p>Loading AudioContext...</p>
@@ -116,7 +95,7 @@ function MyMultiPlayerComponent() {
           component. Just point it to your wav file to use, and it will handle the AudioContext
           creation for you.
         </p>
-        <ConvolverPlayer irFilePath={irFile} />
+        <ConvolverPlayer irFilePath="/demo/ir.wav"/>
         <pre>
           <code ref={setCodeBlockRef} className="language-jsx">
             {singleUseCode}
@@ -135,7 +114,7 @@ function MyMultiPlayerComponent() {
         </p>
         {sharedAudioContext ? (
           <>
-            <ConvolverPlayer irFilePath={irFile} audioContext={sharedAudioContext} />
+            <ConvolverPlayer irFilePath="/demo/ir.wav" audioContext={sharedAudioContext} />
             {testSounds.map((sound, index) => (
               <ConvolverPlayer
                 key={index}
