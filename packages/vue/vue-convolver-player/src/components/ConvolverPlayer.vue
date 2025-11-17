@@ -44,9 +44,9 @@ import {
   setupCanvasContext,
   getAccentColor,
 } from "@convolver-player/core";
-import type { TestSound, Props } from "../types";
+import type { TestSound, ConvolverPlayerProps } from "@convolver-player/core/types";
 
-const props = defineProps<Props>();
+const props = defineProps<ConvolverPlayerProps>();
 
 let convolverProcessor: ConvolverProcessor | null = null;
 

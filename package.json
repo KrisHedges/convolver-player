@@ -4,7 +4,7 @@
   "type": "module",
   "workspaces": [
     "packages/vue/*",
-    "packages/core/*",
+    "packages/core/*"
   ],
   "scripts": {
     "dev": "yarn workspaces run dev",
