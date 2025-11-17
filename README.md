@@ -22,6 +22,14 @@ This project is managed as a monorepo using [Yarn Workspaces](https://classic.ya
 *   **Build Tool**: Vite (configured with `rolldown-vite` for experimental performance)
 *   **Description**: The Vue version of the convolver player component, offering a customizable audio convolution experience, built on top of `@convolver-player/core`.
 
+### `@convolver-player/react`
+
+*   **Location**: `packages/react/react-convolver-player`
+*   **Framework**: React
+*   **Language**: TypeScript
+*   **Build Tool**: Vite
+*   **Description**: The React version of the convolver player component, offering a customizable audio convolution experience, built on top of `@convolver-player/core`.
+
 ## Getting Started
 
 To get started with development, follow these steps:
@@ -42,6 +50,12 @@ To start the development server for a specific UI package, use the `yarn workspa
 yarn workspace @convolver-player/vue dev
 ```
 
+Or for the React component:
+
+```bash
+yarn workspace @convolver-player/react dev
+```
+
 This will typically open a local development server (e.g., `http://localhost:5173`) where you can see the component in action and make live changes.
 
 ### 3. Building
@@ -50,6 +64,12 @@ To build a specific package for production, use the `yarn workspace` command wit
 
 ```bash
 yarn workspace @convolver-player/vue build
+```
+
+Or to build the React component:
+
+```bash
+yarn workspace @convolver-player/react build
 ```
 
 Or to build the core library:
@@ -68,6 +88,12 @@ To run the unit tests for a specific package, use the `yarn workspace` command w
 yarn workspace @convolver-player/vue test:run
 ```
 
+Or for the React component:
+
+```bash
+yarn workspace @convolver-player/react test:run
+```
+
 Or for the core library:
 
 ```bash
@@ -78,6 +104,12 @@ If you wish to run tests with coverage reporting:
 
 ```bash
 yarn workspace @convolver-player/vue test:run:coverage
+```
+
+Or for the React component:
+
+```bash
+yarn workspace @convolver-player/react test:run:coverage
 ```
 
 Or for the core library:
