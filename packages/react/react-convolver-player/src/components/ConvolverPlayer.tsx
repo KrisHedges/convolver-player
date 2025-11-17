@@ -42,8 +42,6 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
   const initializeAudio = useCallback(async () => {
     const audioContext: AudioContext = getAudioContext();
     if (!audioContext) return;
-
-
     setIsAudioContextReady(true);
 
   }, [getAudioContext]);
