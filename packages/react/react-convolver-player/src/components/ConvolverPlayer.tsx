@@ -69,7 +69,6 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
       } else {
         convolverProcessorRef.current.updateIrBuffer(irBuffer);
       }
-      convolverProcessorRef.current.setWetDryMix(wetDryMix);
     }
 
     return () => {
@@ -78,7 +77,14 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({ irFilePath, audioCont
         convolverProcessorRef.current = null;
       }
     };
-  }, [irBuffer, wetDryMix]); // Dependencies for this effect
+  }, [irBuffer]);
+
+  // New useEffect for just the mix
+  useEffect(() => {
+    if (convolverProcessorRef.current) {
+      convolverProcessorRef.current.setWetDryMix(wetDryMix);
+    }
+  }, [wetDryMix]);
 
   useEffect(() => {
     const currentAudioContext = getAudioContext(); // Get the audio context here
