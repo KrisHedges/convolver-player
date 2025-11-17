@@ -63,8 +63,6 @@ const displayedWetGain = computed<string>(() => {
   return String((wetGainValue.value * 100).toFixed(0)) + "%";
 });
 
-
-
 import click from "../assets/sounds/click.wav";
 import piano from "../assets/sounds/piano.wav";
 import guitar from "../assets/sounds/guitar.wav";

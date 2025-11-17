@@ -1,10 +1,7 @@
-
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ConvolverPlayer from '../ConvolverPlayer.vue';
 import { MockAudioContext } from '../../../vitest.setup'; // Import MockAudioContext
-
 
 describe('ConvolverPlayer', () => {
   beforeEach(() => {

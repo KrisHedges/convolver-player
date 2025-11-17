@@ -1,13 +1,13 @@
 {
   "name": "convolver-player-monorepo",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/vue/*",
     "packages/core/*",
-    "packages/react/*"
   ],
   "scripts": {
-    "dev": "yarn workspace @convolver-player/vue dev",
+    "dev": "yarn workspaces run dev",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
     "test:coverage": "yarn workspaces run test:coverage"

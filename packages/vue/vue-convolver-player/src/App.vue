@@ -47,8 +47,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="container">
-    <h1>ConvolverPlayer Demo</h1>
-
+    <h1>ConvolverPlayer (Vue) Demo</h1>
     <section>
       <h2>Single Use Example</h2>
       <p>
