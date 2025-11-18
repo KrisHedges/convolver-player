@@ -7,19 +7,8 @@ This monorepo contains UI components designed to apply convolution reverb to an 
 This project is managed as a monorepo using [Yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/). This means there is a single root repository that manages multiple sub-packages. All component packages are located within the `packages` directory.
 
 ## Packages
-<!-- MONOREPO_COVERAGE_BADGES_START -->
-### `@convolver-player/core`
-![Core Coverage](packages/core/convolver-player-core/coverage/badge.svg)
-
-### `@convolver-player/vue`
-![Vue Coverage](packages/vue/vue-convolver-player/coverage/badge.svg)
-
-### `@convolver-player/react`
-![React Coverage](packages/react/react-convolver-player/coverage/badge.svg)
-<!-- MONOREPO_COVERAGE_BADGES_END -->
 
 ### `@convolver-player/core`
-
 
 *   **Location**: `packages/core/convolver-player-core`
 *   **Language**: TypeScript
