@@ -68,7 +68,6 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
         convolverProcessorRef.current = new ConvolverProcessor({
           audioContext: audioContext,
           irBuffer: irBuffer,
-          wetGainValue: wetDryMix,
         });
       } else {
         convolverProcessorRef.current.updateIrBuffer(irBuffer);
