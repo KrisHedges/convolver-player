@@ -29,7 +29,7 @@ jobs:
         run: yarn workspace @convolver-player/core build
 
       - name: Run coverage for all packages
-        run: yarn workspaces foreach run test:run:coverage
+        run: yarn workspaces run test:run:coverage
 
       - name: Install istanbul-badges-reporter
         run: yarn add istanbul-badges-reporter --dev
