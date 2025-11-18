@@ -29,7 +29,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@convolver-player/core": "^1.0.0"
+    "@convolver-player/core": "1.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
