@@ -7,30 +7,28 @@ This monorepo contains UI components designed to apply convolution reverb to an 
 This project is managed as a monorepo using [Yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/). This means there is a single root repository that manages multiple sub-packages. All component packages are located within the `packages` directory.
 
 ## Packages
-<!-- MONOREPO_COVERAGE_BADGES_START -->
-### `@convolver-player/core`
-![Core Coverage](packages/core/convolver-player-core/coverage/badge.svg)
-
-### `@convolver-player/vue`
-![Vue Coverage](packages/vue/vue-convolver-player/coverage/badge.svg)
-
-### `@convolver-player/react`
-![React Coverage](packages/react/react-convolver-player/coverage/badge.svg)
-<!-- MONOREPO_COVERAGE_BADGES_END -->
 
 ### `@convolver-player/core`
-
 
 *   **Location**: `packages/core/convolver-player-core`
 *   **Language**: TypeScript
 *   **Description**: Contains the core, framework-agnostic logic for audio processing (Web Audio API management, impulse response loading, convolution, gain control) and waveform visualization. This package is designed to be consumed by framework-specific component implementations.
 
+### `@convolver-player/vue`
 
 *   **Location**: `packages/vue/vue-convolver-player`
 *   **Framework**: Vue 3
 *   **Language**: TypeScript
 *   **Build Tool**: Vite (configured with `rolldown-vite` for experimental performance)
 *   **Description**: The Vue version of the convolver player component, offering a customizable audio convolution experience, built on top of `@convolver-player/core`.
+
+### `@convolver-player/react`
+
+*   **Location**: `packages/react/react-convolver-player`
+*   **Framework**: React
+*   **Language**: TypeScript
+*   **Build Tool**: Vite
+*   **Description**: The React version of the convolver player component, offering a customizable audio convolution experience, built on top of `@convolver-player/core`.
 
 #### Installation
 
