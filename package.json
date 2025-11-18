@@ -10,8 +10,8 @@
   "scripts": {
     "dev": "yarn workspaces run dev",
     "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test",
-    "test:coverage": "yarn workspaces run test:coverage"
+    "test": "yarn workspaces run test:run",
+    "test:coverage": "yarn workspaces run test:run:coverage"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.9",
@@ -19,6 +19,7 @@
     "react": "^18.2.0",
     "vite": "^5.0.0",
     "vitest": "^4.0.9",
-    "vue": "^3.3.0"
+    "vue": "^3.3.0",
+    "react-dom": "^18.2.0"
   }
 }

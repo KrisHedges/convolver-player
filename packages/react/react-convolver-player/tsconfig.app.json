@@ -3,7 +3,7 @@
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/__tests__"],
   "compilerOptions": {
     "paths": {
-      "@convolver-player/core": ["../../core/convolver-player-core/dist/index.js"]
+      "@convolver-player/core": ["../../core/convolver-player-core/src/index.ts"]
     },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
@@ -11,6 +11,11 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "types": ["vite/client"],
+    "paths": {
+      "@convolver-player/core": [
+        "../../core/convolver-player-core/src/index.ts"
+      ]
+    },
     "skipLibCheck": true,
 
     /* Bundler mode */

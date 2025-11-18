@@ -156,7 +156,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
   }, []);
 
   return (
-    <div className="convolver-player">
+    <div className="convolver-player" data-testid="convolver-player">
       <div className="convolver-examples">
         {testSounds.map((sound) => (
           <button

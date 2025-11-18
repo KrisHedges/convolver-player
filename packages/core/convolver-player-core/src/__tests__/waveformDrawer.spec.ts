@@ -147,7 +147,7 @@ describe("waveformDrawer", () => {
 
       // Mock getComputedStyle
       vi.spyOn(window, 'getComputedStyle').mockReturnValue({
-        getPropertyValue: vi.fn((prop) => {
+        getPropertyValue: vi.fn((prop: string) => {
           if (prop === "accent-color") return "rgb(128, 0, 128)";
           return "";
         }),
