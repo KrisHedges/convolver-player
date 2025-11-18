@@ -5,8 +5,8 @@
         v-for="sound in testSounds"
         :key="sound.label"
         :disabled="!irBuffer"
-        @click="playTestSound(sound)"
         style="display: flex; align-items: center; justify-content: center;"
+        @click="playTestSound(sound)"
       >
         <PlayIcon />{{ sound.label }}
       </button>

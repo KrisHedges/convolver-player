@@ -23,7 +23,7 @@
 
   onMounted(async () => {
     // Create a new AudioContext for shared use
-    const context = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
+    const context = new (window.AudioContext || window.webkitAudioContext)();
     sharedAudioContext.value = context;
 
     // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
