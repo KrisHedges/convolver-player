@@ -47,8 +47,9 @@
     "@types/testing-library__react": "^10.2.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@vitejs/plugin-react-oxc": "^0.4.3",
+    "@vitejs/plugin-react": "^5.0.0",
+
+
     "@vitest/coverage-v8": "latest",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
