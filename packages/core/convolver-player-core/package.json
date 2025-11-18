@@ -17,6 +17,11 @@
     },
     "./types": {
       "types": "./dist/types.d.ts"
+    },
+    "./vitest.shared-mocks": {
+      "import": "./vitest.shared-mocks.ts",
+      "types": "./vitest.shared-mocks.ts",
+      "default": "./vitest.shared-mocks.ts"
     }
   },
   "scripts": {

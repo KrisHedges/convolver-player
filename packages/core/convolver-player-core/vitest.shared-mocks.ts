@@ -74,31 +74,35 @@ export class MockAudioContext {
       configurable: true, // Allow redefinition
     });
   }
-  decodeAudioData = vi.fn(() =>
+}
+
+// Define prototype methods as vi.fn()
+Object.assign(MockAudioContext.prototype, {
+  decodeAudioData: vi.fn(() =>
     Promise.resolve(new AudioBufferMock({ length: 1, sampleRate: 44100 }))
-  );
-  createBufferSource = vi.fn(() => ({
+  ),
+  createBufferSource: vi.fn(() => ({
     connect: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
     disconnect: vi.fn(),
-  }));
-  createConvolver = vi.fn(() => ({
+  })),
+  createConvolver: vi.fn(() => ({
     connect: vi.fn(),
     disconnect: vi.fn(),
     buffer: null,
-  }));
-  createGain = vi.fn(() => ({
+  })),
+  createGain: vi.fn(() => ({
     connect: vi.fn(),
     disconnect: vi.fn(),
     gain: {
       value: 0,
     },
-  }));
-  destination = {};
-  resume = vi.fn(() => Promise.resolve()); // Ensure it returns a Promise
-  close = vi.fn(() => Promise.resolve()); // Ensure it returns a Promise
-}
+  })),
+  destination: {},
+  resume: vi.fn(() => Promise.resolve()), // Ensure it returns a Promise
+  close: vi.fn(() => Promise.resolve()), // Ensure it returns a Promise
+});
 
 vi.stubGlobal("AudioContext", MockAudioContext);
 vi.stubGlobal("webkitAudioContext", MockAudioContext);

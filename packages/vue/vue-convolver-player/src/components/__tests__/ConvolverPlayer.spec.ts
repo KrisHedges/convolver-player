@@ -1,11 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ConvolverPlayer from '../ConvolverPlayer.vue';
-import { MockAudioContext } from '../../../vitest.setup'; // Import MockAudioContext
+import { MockAudioContext } from '../../../vitest.setup';
 
 describe('ConvolverPlayer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(MockAudioContext.prototype, 'decodeAudioData');
+    vi.spyOn(MockAudioContext.prototype, 'createBufferSource');
+    vi.spyOn(MockAudioContext.prototype, 'createConvolver');
+    vi.spyOn(MockAudioContext.prototype, 'createGain');
+    vi.spyOn(MockAudioContext.prototype, 'resume');
+    vi.spyOn(MockAudioContext.prototype, 'close');
   });
 
   afterEach(() => {
