@@ -22,11 +22,11 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
+
     alias: {
       '@convolver-player/core': resolve(
         __dirname,
-        '../../core/convolver-player-core/dist/index.js'
+        '../../core/convolver-player-core/dist'
       ),
     },
   },
