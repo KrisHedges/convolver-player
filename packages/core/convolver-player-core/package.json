@@ -1,6 +1,6 @@
 {
   "name": "@convolver-player/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Core logic for Convolver Player components",
   "license": "MIT",
