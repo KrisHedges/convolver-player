@@ -1,28 +1,40 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
+import { MockAudioContext, AudioBufferMock } from '../../core/convolver-player-core/vitest.shared-mocks';
 
-// Mock ResizeObserver
+// Re-stub globals using the imported mocks
+vi.stubGlobal('AudioContext', MockAudioContext);
+vi.stubGlobal('webkitAudioContext', MockAudioContext);
+vi.stubGlobal('AudioBuffer', AudioBufferMock);
+
+// Mock ResizeObserver (if not already in shared mocks)
 class ResizeObserverMock {
   observe = vi.fn();
   unobserve = vi.fn();
   disconnect = vi.fn();
 }
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
-vi.stubGlobal("ResizeObserver", ResizeObserverMock);
-
-// Mock HTMLCanvasElement.prototype.getContext
+// Mock HTMLCanvasElement.prototype.getContext (if not already in shared mocks)
 const mockCanvasContext = {
   clearRect: vi.fn(),
   setTransform: vi.fn(),
   beginPath: vi.fn(),
-  strokeStyle: "",
+  strokeStyle: '',
   lineWidth: 0,
   lineTo: vi.fn(),
   stroke: vi.fn(),
+  measureText: vi.fn(() => ({ width: 10 })),
+  fillText: vi.fn(),
+  canvas: {
+    width: 300,
+    height: 150,
+    style: {},
+    getContext: vi.fn(() => mockCanvasContext),
+  },
 };
-
 HTMLCanvasElement.prototype.getContext = vi.fn(() => mockCanvasContext);
 
-// Mock HTMLCanvasElement.prototype.getBoundingClientRect
+// Mock HTMLCanvasElement.prototype.getBoundingClientRect (if not already in shared mocks)
 HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
   width: 300,
   height: 150,
@@ -35,73 +47,17 @@ HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
   toJSON: () => ({}),
 }));
 
-// Mock AudioBuffer
-export class AudioBufferMock {
-  length: number;
-  sampleRate: number;
-  numberOfChannels: number;
-  constructor({ length = 1, sampleRate = 44100, numberOfChannels = 1 } = {}) {
-    this.length = length;
-    this.sampleRate = sampleRate;
-    this.numberOfChannels = numberOfChannels;
-  }
-  getChannelData = vi.fn((channel: number) => {
-    if (channel === 0) {
-      return new Float32Array(this.length).fill(0.5); // Return dummy data
-    }
-    return new Float32Array(this.length);
-  });
-  duration = 0.1; // Add a dummy duration
-}
-vi.stubGlobal("AudioBuffer", AudioBufferMock);
-
-// Mock AudioContext
-export class MockAudioContext {
-  constructor() {
-    // No need to define methods here, they will be on the prototype
-  }
-}
-
-MockAudioContext.prototype.decodeAudioData = vi.fn(() =>
-  Promise.resolve(new AudioBufferMock({ length: 1, sampleRate: 44100 }))
-);
-MockAudioContext.prototype.createBufferSource = vi.fn(() => ({
-  connect: vi.fn(),
-  start: vi.fn(),
-  stop: vi.fn(),
-  disconnect: vi.fn(),
-}));
-MockAudioContext.prototype.createConvolver = vi.fn(() => ({
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  buffer: null,
-}));
-MockAudioContext.prototype.createGain = vi.fn(() => ({
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  gain: {
-    value: 0,
-  },
-}));
-MockAudioContext.prototype.destination = {};
-MockAudioContext.prototype.resume = vi.fn();
-MockAudioContext.prototype.close = vi.fn();
-MockAudioContext.prototype.state = 'running';
-
-vi.stubGlobal("AudioContext", MockAudioContext);
-vi.stubGlobal("webkitAudioContext", MockAudioContext);
-
-// Mock fetch to return a mocked Response object
+// Mock fetch to return a mocked Response object (if not already in shared mocks)
 global.fetch = vi.fn((input: RequestInfo | URL) => {
-  const url = typeof input === "string" ? input : input.url;
-  // Simulate a successful response for any audio file
-  if (url.endsWith(".wav")) {
+  const url = typeof input === 'string' ? input : input.url;
+  if (url.endsWith('.wav')) {
     return Promise.resolve({
       ok: true,
       status: 200,
-      arrayBuffer: vi.fn(() => Promise.resolve(new ArrayBuffer(8))), // Return a dummy ArrayBuffer
+      arrayBuffer: vi.fn(() => Promise.resolve(new ArrayBuffer(8))),
     } as Response);
   }
-  // For other requests, you might want to use the original fetch or throw an error
   return Promise.reject(new Error(`Unhandled fetch request for: ${url}`));
 });
+
+export { MockAudioContext, AudioBufferMock };

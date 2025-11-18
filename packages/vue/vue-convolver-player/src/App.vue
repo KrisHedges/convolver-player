@@ -1,58 +1,53 @@
 <script setup lang="ts">
-import {
-  onMounted,
-  ref,
-  onBeforeUnmount,
-  nextTick,
-  type ComponentPublicInstance,
-} from "vue";
-import ConvolverPlayer from "./components/ConvolverPlayer.vue";
-import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
+  import { onMounted, ref, onBeforeUnmount, nextTick, type ComponentPublicInstance } from 'vue';
+  import ConvolverPlayer from './components/ConvolverPlayer.vue';
+  import hljs from 'highlight.js';
+  import 'highlight.js/styles/github.css';
 
-const sharedAudioContext = ref<AudioContext | null>(null); // Declare sharedAudioContext here
+  const sharedAudioContext = ref<AudioContext | null>(null); // Declare sharedAudioContext here
 
-const codeBlocks = ref<HTMLElement[]>([]);
-const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
-  if (el && el instanceof HTMLElement) {
-    codeBlocks.value.push(el);
-  }
-};
+  const codeBlocks = ref<HTMLElement[]>([]);
+  const setCodeBlockRef = (el: Element | ComponentPublicInstance | null) => {
+    if (el && el instanceof HTMLElement) {
+      codeBlocks.value.push(el);
+    }
+  };
 
-onMounted(() => {
-  nextTick(() => {
-    codeBlocks.value.forEach((block) => {
-      hljs.highlightElement(block);
+  onMounted(() => {
+    nextTick(() => {
+      codeBlocks.value.forEach((block) => {
+        hljs.highlightElement(block);
+      });
     });
   });
-});
 
-onMounted(async () => {
-  // Create a new AudioContext for shared use
-  const context = new AudioContext();
-  sharedAudioContext.value = context;
+  onMounted(async () => {
+    // Create a new AudioContext for shared use
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    sharedAudioContext.value = context;
 
-  // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
-  if (context.state === 'suspended') {
-    await context.resume();
-  }
-});
+    // Resume audio context if it's suspended (e.g., due to browser autoplay policies)
+    if (context.state === 'suspended') {
+      await context.resume();
+    }
+  });
 
-onBeforeUnmount(() => {
-  if (sharedAudioContext.value) {
-    sharedAudioContext.value.close();
-  }
-});
+  onBeforeUnmount(() => {
+    if (sharedAudioContext.value) {
+      sharedAudioContext.value.close();
+    }
+  });
 </script>
 
 <template>
   <div class="container">
-    <h1>ConvolverPlayer Demo</h1>
-
+    <h1>ConvolverPlayer (Vue) Demo</h1>
     <section>
       <h2>Single Use Example</h2>
       <p>
-        Here's the simplest use case a single instance of the <code>ConvolverPlayer</code> component. Just point it to your wav file to use and it will handle the AudioContext creation for you.
+        Here's the simplest use case a single instance of the
+        <code>ConvolverPlayer</code> component. Just point it to your wav file to use and it will
+        handle the AudioContext creation for you.
       </p>
       <ConvolverPlayer ir-file-path="/demo/ir.wav" />
       <pre><code :ref="setCodeBlockRef" class="language-html">
@@ -70,12 +65,11 @@ onBeforeUnmount(() => {
     <section>
       <h2>Multi-Use Example (Shared AudioContext)</h2>
       <p>
-        When using multiple <code>ConvolverPlayer</code> components on the same
-        page, it's best practice to share a single
-        <code>AudioContext</code> instance. This prevents resource exhaustion
-        and potential performance issues that can arise from creating multiple
-        contexts. The <code>ConvolverPlayer</code> component accepts an
-        <code>audioContext</code> prop for this purpose.
+        When using multiple <code>ConvolverPlayer</code> components on the same page, it's best
+        practice to share a single <code>AudioContext</code> instance. This prevents resource
+        exhaustion and potential performance issues that can arise from creating multiple contexts.
+        The <code>ConvolverPlayer</code> component accepts an <code>audioContext</code> prop for
+        this purpose.
       </p>
       <template v-if="sharedAudioContext">
         <ConvolverPlayer ir-file-path="/demo/ir.wav" :audio-context="sharedAudioContext" />
@@ -101,11 +95,8 @@ import ConvolverPlayer from './components/ConvolverPlayer.vue';
 const sharedAudioContext = ref&lt;AudioContext | null&gt;(null);
 
 onMounted(async () => {
-  const context = new AudioContext();
+  const context = new (window.AudioContext || window.webkitAudioContext)();
   sharedAudioContext.value = context;
-  if (context.state === 'suspended') {
-    await context.resume();
-  }
 });
 
 /** Cleanup AudioContext when unmounted */
@@ -117,10 +108,9 @@ onBeforeUnmount(() => {
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;ConvolverPlayer irFilePath="/demo/ir.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/click.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/piano.wav" :audioContext="sharedAudioContext" /&gt;
-  &lt;ConvolverPlayer irFilePath="/src/assets/sounds/guitar.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir1.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir2.wav" :audioContext="sharedAudioContext" /&gt;
+  &lt;ConvolverPlayer irFilePath="/path/to/your/ir3.wav" :audioContext="sharedAudioContext" /&gt;
 &lt;/template&gt;
       </code></pre>
     </section>
@@ -128,8 +118,8 @@ onBeforeUnmount(() => {
     <section>
       <h2>Component Structure</h2>
       <p>
-        The components class structure can be targeted with
-        your CSS. Here's a breakdown of the main elements:
+        The components class structure can be targeted with your CSS. Here's a breakdown of the main
+        elements:
       </p>
       <pre><code :ref="setCodeBlockRef" class="language-html">
 &lt;div class="convolver-player"&gt;
@@ -152,14 +142,13 @@ onBeforeUnmount(() => {
       <h2>Styling Example</h2>
       <p>
         Below is the CSS used in this demo application to style the
-        <code>ConvolverPlayer</code> component. You can adapt these styles or
-        create your own to match your application's theme.
+        <code>ConvolverPlayer</code> component. You can adapt these styles or create your own to
+        match your application's theme.
       </p>
       <p>
         The waveform itself will attempt to use the browser's
-        <code>accent-color</code> for its primary color. If
-        <code>accent-color</code> is not available, it will fall back to a
-        default blue (<code>#007aff</code>).
+        <code>accent-color</code> for its primary color. If <code>accent-color</code> is not
+        available, it will fall back to a default blue (<code>#007aff</code>).
       </p>
       <pre><code :ref="setCodeBlockRef" class="language-css">
 /* Demo style for ConvolverPlayer */
@@ -208,64 +197,64 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  accent-color: rgb(139, 82, 199);
-}
-
-body {
-  font-size: 16px;
-}
-pre {
-  box-shadow: 0 0 0.95px ButtonBorder;
-}
-.container {
-  width: 800px;
-  margin: 0 auto;
-}
-
-/* Existing convolver-player styles */
-.convolver-player {
-  display: grid;
-  grid-template-columns: 2fr 5fr;
-  column-gap: 1em;
-  padding: 2em;
-  margin: 1em 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 0.95px ButtonBorder;
-  .convolver-examples {
-    display: grid;
-    gap: 0.35em;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    button {
-      height: 100%;
-    }
+  :root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    accent-color: rgb(139, 82, 199);
   }
-  .convolver-ir {
+
+  body {
+    font-size: 16px;
+  }
+  pre {
+    box-shadow: 0 0 0.95px ButtonBorder;
+  }
+  .container {
+    width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Existing convolver-player styles */
+  .convolver-player {
     display: grid;
-    align-items: center;
-    gap: 0.5em;
-    .convolver-ir-info {
-      align-content: center;
-    }
-    .convolver-waveform-canvas {
-      width: 100%;
-      height: 100px;
-      background-color: Canvas;
-      box-shadow: 0 0 0.95px ButtonBorder;
-    }
-    .convolver-controls {
+    grid-template-columns: 2fr 5fr;
+    column-gap: 1em;
+    padding: 2em;
+    margin: 1em 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0.95px ButtonBorder;
+    .convolver-examples {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      gap: 0.35em;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      button {
+        height: 100%;
+      }
+    }
+    .convolver-ir {
+      display: grid;
+      align-items: center;
+      gap: 0.5em;
+      .convolver-ir-info {
+        align-content: center;
+      }
+      .convolver-waveform-canvas {
+        width: 100%;
+        height: 100px;
+        background-color: Canvas;
+        box-shadow: 0 0 0.95px ButtonBorder;
+      }
+      .convolver-controls {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+      }
     }
   }
-}
 </style>

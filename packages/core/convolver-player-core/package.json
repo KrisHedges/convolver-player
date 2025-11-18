@@ -3,12 +3,28 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Core logic for Convolver Player components",
-  "main": "dist/index.cjs",
+  "license": "MIT",
+  "main": "./dist/convolver-player-core.umd.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts"
+    },
+    "./vitest.shared-mocks": {
+      "import": "./vitest.shared-mocks.ts",
+      "types": "./vitest.shared-mocks.ts",
+      "default": "./vitest.shared-mocks.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest",

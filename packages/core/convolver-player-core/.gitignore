@@ -1,2 +1,6 @@
 dist/
 coverage/
+.#*
+DS_Store
+*error.log
+*debug.log

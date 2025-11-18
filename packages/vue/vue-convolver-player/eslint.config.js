@@ -1,24 +1,24 @@
-import globals from "globals";
-import js from "@eslint/js";
-import ts from "typescript-eslint";
-import vue from "eslint-plugin-vue";
-import prettier from "eslint-config-prettier";
+import globals from 'globals';
+import js from '@eslint/js';
+import ts from 'typescript-eslint';
+import vue from 'eslint-plugin-vue';
+import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ["dist", "coverage"],
+    ignores: ['dist', 'coverage', '.prettierrc.cjs', '**/.#*'],
   },
   js.configs.recommended,
   ...ts.configs.recommended,
-  ...vue.configs["flat/recommended"],
+  ...vue.configs['flat/recommended'],
   prettier,
   {
-    files: ["**/*.vue"],
+    files: ['**/*.vue'],
     languageOptions: {
       parser: vue.parser,
       parserOptions: {
         parser: ts.parser,
-        sourceType: "module",
+        sourceType: 'module',
       },
       globals: {
         ...globals.browser,
@@ -26,11 +26,11 @@ export default [
       },
     },
     rules: {
-      "vue/multi-word-component-names": "off",
+      'vue/multi-word-component-names': 'off',
     },
   },
   {
-    files: ["**/*.js"],
+    files: ['**/*.js'],
     languageOptions: {
       globals: {
         ...globals.node,

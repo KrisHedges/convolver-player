@@ -1,14 +1,17 @@
-
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ConvolverPlayer from '../ConvolverPlayer.vue';
-import { MockAudioContext } from '../../../vitest.setup'; // Import MockAudioContext
-
+import { MockAudioContext } from '../../../vitest.setup';
 
 describe('ConvolverPlayer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(MockAudioContext.prototype, 'decodeAudioData');
+    vi.spyOn(MockAudioContext.prototype, 'createBufferSource');
+    vi.spyOn(MockAudioContext.prototype, 'createConvolver');
+    vi.spyOn(MockAudioContext.prototype, 'createGain');
+    vi.spyOn(MockAudioContext.prototype, 'resume');
+    vi.spyOn(MockAudioContext.prototype, 'close');
   });
 
   afterEach(() => {
@@ -32,7 +35,7 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for promises to resolve
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for promises to resolve
 
     // Expect fetch to be called with the correct IR file path
     expect(global.fetch).toHaveBeenCalledWith(irFilePath);
@@ -49,13 +52,13 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
     const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for test sound to load and play
 
     // Expect fetch to be called for the test sound
     expect(global.fetch).toHaveBeenCalledWith('/src/assets/sounds/click.wav');
@@ -73,7 +76,8 @@ describe('ConvolverPlayer', () => {
     expect(MockAudioContext.prototype.createGain).toHaveBeenCalledTimes(2);
 
     // Expect start to be called on the buffer source
-    const bufferSourceInstance = MockAudioContext.prototype.createBufferSource.mock.results[0].value;
+    const bufferSourceInstance =
+      MockAudioContext.prototype.createBufferSource.mock.results[0].value;
     expect(bufferSourceInstance.start).toHaveBeenCalledWith(0);
   });
 
@@ -89,7 +93,7 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for promises to resolve
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for promises to resolve
 
     // Expect the global AudioContext constructor NOT to be called
     expect(spyOnAudioContextConstructor).not.toHaveBeenCalled();
@@ -106,12 +110,12 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for test sound to load and play
 
     // Get references to the mocked gain nodes
     const createGainSpy = MockAudioContext.prototype.createGain;
@@ -141,7 +145,7 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Check if the IR information is displayed
     const info = wrapper.find('.convolver-ir-info');
@@ -159,7 +163,7 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Check if the canvas context methods were called
     const canvasContext = HTMLCanvasElement.prototype.getContext('2d');
@@ -177,13 +181,13 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
     const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for test sound to load and play
 
     // Expect that a local AudioContext was created and used
     expect(wrapper.vm.localAudioContext).not.toBeNull();
@@ -205,13 +209,13 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Simulate a click on the first test sound button
     const clickButton = wrapper.find('.convolver-examples').findAll('button')[0];
     await clickButton.trigger('click');
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for test sound to load and play
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for test sound to load and play
 
     // Expect that the resume method was called on the provided audioContext
     expect(providedAudioContext.resume).toHaveBeenCalled();
@@ -235,7 +239,9 @@ describe('ConvolverPlayer', () => {
     await wrapper.vm.playTestSound({ label: 'Click', type: 'sample', path: 'test.wav' });
 
     // Expect that a warning was logged
-    expect(consoleWarnSpy).toHaveBeenCalledWith('AudioContext or ConvolverProcessor not initialized.');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'AudioContext or ConvolverProcessor not initialized.'
+    );
   });
 
   it('clears the irBuffer and canvas when irFilePath becomes null', async () => {
@@ -246,14 +252,14 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for IR to load
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for IR to load
 
     // Expect irBuffer to be set
     expect(wrapper.vm.irBuffer).not.toBeNull();
 
     // Set irFilePath to null
     await wrapper.setProps({ irFilePath: null });
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for the component to update
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for the component to update
 
     // Expect irBuffer to be null
     expect(wrapper.vm.irBuffer).toBeNull();
@@ -273,7 +279,7 @@ describe('ConvolverPlayer', () => {
       },
     });
 
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for component to mount
+    await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for component to mount
 
     const localAudioContext = wrapper.vm.localAudioContext;
     const resizeObserver = wrapper.vm.resizeObserver;
