@@ -80,8 +80,8 @@
 
   const testSounds: TestSound[] = [
     { label: 'Click', type: 'sample', path: click },
-    { label: 'Piano', type: 'sample', path: piano },
     { label: 'Guitar', type: 'sample', path: guitar },
+    { label: 'Piano', type: 'sample', path: piano },
     { label: 'Snare', type: 'sample', path: snare },
   ];
 
