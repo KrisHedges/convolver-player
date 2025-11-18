@@ -53,7 +53,7 @@
       default: null,
     },
     audioContext: {
-      validator: (value: unknown) => value instanceof AudioContext || value === undefined,
+      validator: (value: unknown) => value instanceof AudioContext || value === undefined || value === null,
       default: undefined,
     },
   });
