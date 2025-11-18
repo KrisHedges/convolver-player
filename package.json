@@ -12,7 +12,8 @@
     "dev": "yarn workspaces run dev",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test:run",
-    "test:coverage": "yarn workspaces run test:run:coverage"
+    "test:coverage": "yarn workspaces run test:run:coverage",
+    "generate-badges": "istanbul-badges-readme"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.9",
