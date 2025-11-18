@@ -12,9 +12,13 @@
     "dev": "yarn workspaces run dev",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test:run",
-    "test:coverage": "yarn workspaces run test:run:coverage"
+    "test:coverage": "yarn workspaces run test:run:coverage",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "yarn build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@vitest/coverage-v8": "^4.0.9",
     "jsdom": "^27.2.0",
     "react": "^18.2.0",

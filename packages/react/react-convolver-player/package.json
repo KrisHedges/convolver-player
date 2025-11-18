@@ -2,6 +2,23 @@
   "name": "@convolver-player/react",
   "version": "0.1.0",
   "license": "MIT",
+  "author": "Kris Hedges",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krishedges/convolver-player.git"
+  },
+  "homepage": "https://github.com/krishedges/convolver-player/tree/main/packages/react/react-convolver-player#readme",
+  "bugs": {
+    "url": "https://github.com/krishedges/convolver-player/issues"
+  },
+  "keywords": [
+    "react",
+    "web-audio",
+    "convolver",
+    "impulse-response",
+    "audio",
+    "player"
+  ],
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "./dist/react-convolver-player.umd.cjs",
@@ -15,6 +32,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -48,8 +68,6 @@
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "@vitejs/plugin-react": "^5.0.0",
-
-
     "@vitest/coverage-v8": "latest",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
