@@ -31,6 +31,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
   const [irInfo, setIrInfo] = useState<string>('');
   const [wetDryMix, setWetDryMix] = useState<number>(0.5);
   const [isAudioContextReady, setIsAudioContextReady] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // New loading state
 
   const getAudioContext = useCallback(() => {
     if (propAudioContext) {
@@ -92,6 +93,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
     const currentAudioContext = getAudioContext(); // Get the audio context here
 
     const loadIr = async () => {
+      setIsLoading(true); // Set loading to true at the start
       if (!currentAudioContext || !irFilePath) {
         setIrBuffer(null);
         setIrInfo('');
@@ -101,6 +103,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
           }
         }
+        setIsLoading(false); // Set loading to false if no context or path
         return;
       }
 
@@ -122,6 +125,8 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
         console.error('Error loading IR file:', error);
         setIrBuffer(null);
         setIrInfo('Error loading IR');
+      } finally {
+        setIsLoading(false); // Set loading to false after success or failure
       }
     };
 
@@ -162,14 +167,18 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
           <button
             key={sound.label}
             onClick={() => playTestSound(sound.path)}
-            disabled={!isAudioContextReady || !irBuffer}
+            disabled={!isAudioContextReady || !irBuffer || isLoading} // Disable buttons while loading
           >
             Play {sound.label}
           </button>
         ))}
       </div>
       <div className="convolver-ir">
-        <span className="convolver-ir-info">{irInfo}</span>
+        {isLoading ? (
+          <span className="convolver-ir-info">Loading Impulse Response...</span>
+        ) : (
+          <span className="convolver-ir-info">{irInfo}</span>
+        )}
         <canvas
           ref={canvasRef}
           width="300"
@@ -186,6 +195,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
             step="0.01"
             value={wetDryMix}
             onChange={handleWetDryMixChange}
+            disabled={isLoading} // Disable slider while loading
           />
           <span>{(wetDryMix * 100).toFixed(0)}% Wet</span>
         </div>

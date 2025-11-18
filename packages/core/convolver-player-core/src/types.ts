@@ -5,6 +5,6 @@ export interface TestSound {
 }
 
 export interface ConvolverPlayerProps {
-  irFilePath: string;
+  irFilePath: string | null;
   audioContext?: AudioContext | null;
 }

@@ -2,6 +2,7 @@
   "name": "@convolver-player/vue",
   "private": false,
   "version": "0.1.0",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/vue-convolver-player.umd.js",
   "module": "./dist/vue-convolver-player.es.js",
