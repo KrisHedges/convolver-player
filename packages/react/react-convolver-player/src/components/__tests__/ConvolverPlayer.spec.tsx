@@ -156,7 +156,7 @@ describe('ConvolverPlayer', () => {
       expect(convolverProcessorInstance).toBeDefined();
     });
 
-    const playButton = screen.getByRole('button', { name: /Play Click/i });
+    const playButton = screen.getByRole('button', { name: /Click/i });
     await userEvent.click(playButton);
 
     await waitFor(() => {
@@ -187,7 +187,7 @@ describe('ConvolverPlayer', () => {
     await waitFor(() => expect(loadAudioBuffer).toHaveBeenCalledWith(mockAudioContextInstance, irFilePath));
 
     // Simulate a click on the first test sound button to ensure ConvolverProcessor is initialized
-    const playButton = screen.getByRole('button', { name: /Play Click/i });
+    const playButton = screen.getByRole('button', { name: /Click/i });
     await userEvent.click(playButton);
 
     // Wait for the ConvolverProcessor instance to be created
@@ -198,11 +198,11 @@ describe('ConvolverPlayer', () => {
       expect(convolverProcessorInstance).toBeDefined();
     });
 
-    const slider = screen.getByLabelText(/Wet\/Dry Mix:/i);
-    fireEvent.change(slider, { target: { value: '0.75' } });
+    const slider = screen.getByLabelText(/Effect:/i);
+    fireEvent.change(slider, { target: { value: '0.25' } });
 
     await waitFor(() => {
-      expect(convolverProcessorInstance.setWetDryMix).toHaveBeenCalledWith(0.75);
+      expect(convolverProcessorInstance.setWetDryMix).toHaveBeenCalledWith(0.25);
     });
   });
 

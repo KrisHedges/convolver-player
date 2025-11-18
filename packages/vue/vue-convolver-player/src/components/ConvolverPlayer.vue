@@ -6,9 +6,9 @@
         :key="sound.label"
         :disabled="!irBuffer"
         @click="playTestSound(sound)"
+        style="display: flex; align-items: center; justify-content: center;"
       >
-        <i class="lni lni-play"></i>
-        {{ sound.label }}
+        <PlayIcon />{{ sound.label }}
       </button>
     </div>
     <div class="convolver-ir">
@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
   import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
+  import PlayIcon from './PlayIcon.vue';
   import {
     loadAudioBuffer,
     ConvolverProcessor,
@@ -66,7 +67,7 @@
   const ctx = ref<CanvasRenderingContext2D | null>(null);
   let rafId: number | null = null;
 
-  const wetGainValue = ref<number>(1); // Initial wet gain value (100% wet)
+  const wetGainValue = ref<number>(0.75); // Initial wet gain value (75% wet)
 
   const displayedWetGain = computed<string>(() => {
     return String((wetGainValue.value * 100).toFixed(0)) + '%';

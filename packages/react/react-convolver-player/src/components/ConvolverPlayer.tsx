@@ -7,6 +7,7 @@ import {
   getAccentColor,
 } from '@convolver-player/core';
 import type { TestSound, ConvolverPlayerProps } from '@convolver-player/core/types';
+import PlayIcon from './PlayIcon';
 
 import clickSound from '../assets/sounds/click.wav';
 import guitarSound from '../assets/sounds/guitar.wav';
@@ -29,7 +30,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
   const localAudioContextRef = useRef<AudioContext | null>(null);
   const [irBuffer, setIrBuffer] = useState<AudioBuffer | null>(null);
   const [irInfo, setIrInfo] = useState<string>('');
-  const [wetDryMix, setWetDryMix] = useState<number>(0.5);
+  const [wetDryMix, setWetDryMix] = useState<number>(0.75);
   const [isAudioContextReady, setIsAudioContextReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true); // New loading state
 
@@ -168,8 +169,9 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
             key={sound.label}
             onClick={() => playTestSound(sound.path)}
             disabled={!isAudioContextReady || !irBuffer || isLoading} // Disable buttons while loading
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            Play {sound.label}
+            <PlayIcon />{sound.label}
           </button>
         ))}
       </div>
@@ -186,7 +188,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
           className="convolver-waveform-canvas"
         ></canvas>
         <div className="convolver-controls">
-          <label htmlFor="wetDryMix">Wet/Dry Mix:</label>
+          <label htmlFor="wetDryMix">Effect:</label>
           <input
             type="range"
             id="wetDryMix"
@@ -197,7 +199,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
             onChange={handleWetDryMixChange}
             disabled={isLoading} // Disable slider while loading
           />
-          <span>{(wetDryMix * 100).toFixed(0)}% Wet</span>
+          <span>{(wetDryMix * 100).toFixed(0)}%</span>
         </div>
       </div>
     </div>
