@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Checkout the code to the root of the workspace
+          path: .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -20,6 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+        working-directory: .
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -30,3 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: .
