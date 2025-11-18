@@ -33,4 +33,4 @@ When declaring dependencies between internal monorepo packages, Yarn Classic (v1
 
 In such cases, using a fixed version (e.g., `"1.0.0"`) that matches the local package's version might be necessary to allow `yarn install` to succeed. This is a known quirk, and using `workspace:` protocol is generally more robust in Yarn Berry (v2+) or other package managers like pnpm.
 
-For this project, the `@convolver-player/vue` package uses `"@convolver-player/core": "1.0.0"` to ensure `yarn install` completes successfully, while `@convolver-player/react` uses `"@convolver-player/core": "workspace:^1.0.0"`. This discrepancy is due to the observed behavior with Yarn Classic.
+For this project, both the `@convolver-player/vue` and `@convolver-player/react` packages use `"@convolver-player/core": "1.0.0"` to ensure `yarn install` completes successfully. This is due to the observed behavior with Yarn Classic, where the `workspace:` protocol can sometimes cause resolution issues.
