@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
+  import { ref, watch, onMounted, onBeforeUnmount, computed, withDefaults } from 'vue';
   import PlayIcon from './PlayIcon.vue';
   import {
     loadAudioBuffer,
@@ -45,17 +45,14 @@
     setupCanvasContext,
     getAccentColor,
   } from '@convolver-player/core';
-  import type { TestSound, ConvolverPlayerProps } from '@convolver-player/core/types';
+  import type { TestSound } from '@convolver-player/core/types';
 
-  const props: ConvolverPlayerProps = defineProps({
-    irFilePath: {
-      type: [String, null],
-      default: null,
-    },
-    audioContext: {
-      validator: (value: unknown) => value instanceof AudioContext || value === undefined || value === null,
-      default: undefined,
-    },
+  const props = withDefaults(defineProps<{
+    irFilePath?: string | null;
+    audioContext?: AudioContext | null;
+  }>(), {
+    irFilePath: null,
+    audioContext: undefined,
   });
 
   let convolverProcessor: ConvolverProcessor | null = null;
