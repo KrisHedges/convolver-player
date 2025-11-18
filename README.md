@@ -289,6 +289,10 @@ Navigate to the root directory of the monorepo and install all dependencies for 
 yarn install
 ```
 
+### GitHub Actions CI
+
+This repository uses GitHub Actions to ensure code quality. Pull requests targeting the `main` branch will automatically trigger lint, typecheck, and test workflows.
+
 ### 2. Development
 
 To start the development server for a specific UI package, use the `yarn workspace` command. For example, to run the development server for the Vue component:
