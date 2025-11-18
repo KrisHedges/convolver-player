@@ -32,7 +32,7 @@ jobs:
         run: yarn workspaces run test:run:coverage
 
       - name: Install istanbul-badges-reporter
-        run: yarn add istanbul-badges-reporter --dev
+        run: yarn add istanbul-badges-reporter --dev -W
 
       - name: Create badges directory
         run: mkdir -p .github/badges
