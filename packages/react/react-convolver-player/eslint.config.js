@@ -1,23 +1,26 @@
 import globals from 'globals';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
-import vue from 'eslint-plugin-vue';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist', 'coverage'],
+    ignores: ['dist', 'coverage', '.prettierrc.cjs', '**/.#*'],
   },
   js.configs.recommended,
   ...ts.configs.recommended,
-  ...vue.configs['flat/recommended'],
-  prettier,
   {
-    files: ['**/*.vue'],
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    ...react.configs.flat.recommended,
     languageOptions: {
-      parser: vue.parser,
+      parser: ts.parser,
       parserOptions: {
-        parser: ts.parser,
+        ecmaFeatures: {
+          jsx: true,
+        },
+        ecmaVersion: 'latest',
         sourceType: 'module',
       },
       globals: {
@@ -25,16 +28,31 @@ export default [
         ...globals.node,
       },
     },
+    plugins: {
+      react,
+      'react-hooks': reactHooks,
+    },
     rules: {
-      'vue/multi-word-component-names': 'off',
+      ...reactHooks.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off', // For React 17+ JSX transform
+      'react/prop-types': 'off', // Using TypeScript for prop types
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
   {
-    files: ['**/*.js'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
+    files: ['**/*.spec.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  prettier,
 ];

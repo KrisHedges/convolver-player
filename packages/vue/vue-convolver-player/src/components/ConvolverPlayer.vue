@@ -46,13 +46,13 @@
   } from '@convolver-player/core';
   import type { TestSound, ConvolverPlayerProps } from '@convolver-player/core/types';
 
-  const props = defineProps({
+  const props: ConvolverPlayerProps = defineProps({
     irFilePath: {
       type: [String, null],
       default: null,
     },
     audioContext: {
-      type: Object as PropType<AudioContext | undefined>,
+      validator: (value: unknown) => value instanceof AudioContext || value === undefined,
       default: undefined,
     },
   });

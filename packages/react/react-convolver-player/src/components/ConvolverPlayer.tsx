@@ -80,7 +80,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
         convolverProcessorRef.current = null;
       }
     };
-  }, [irBuffer]);
+  }, [irBuffer, getAudioContext]);
 
   // New useEffect for just the mix
   useEffect(() => {

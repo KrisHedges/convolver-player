@@ -6,7 +6,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist', 'coverage'],
+    ignores: ['dist', 'coverage', '.prettierrc.cjs', '**/.#*'],
   },
   js.configs.recommended,
   ...ts.configs.recommended,
