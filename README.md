@@ -9,12 +9,16 @@ This project is managed as a monorepo using [Yarn Workspaces](https://classic.ya
 ## Packages
 
 ### `@convolver-player/core`
+<!-- BADGE_START -->
+<!-- BADGE_END -->
 
 *   **Location**: `packages/core/convolver-player-core`
 *   **Language**: TypeScript
 *   **Description**: Contains the core, framework-agnostic logic for audio processing (Web Audio API management, impulse response loading, convolution, gain control) and waveform visualization. This package is designed to be consumed by framework-specific component implementations.
 
 ### `@convolver-player/vue`
+<!-- BADGE_START -->
+<!-- BADGE_END -->
 
 *   **Location**: `packages/vue/vue-convolver-player`
 *   **Framework**: Vue 3
@@ -144,6 +148,8 @@ Here's an example of how you might style the component, based on the demo applic
 | `audioContext` | `AudioContext` | An optional, pre-existing `AudioContext` to use. If not provided, the component will create its own. |
 
 ### `@convolver-player/react`
+<!-- BADGE_START -->
+<!-- BADGE_END -->
 
 *   **Location**: `packages/react/react-convolver-player`
 *   **Framework**: React
