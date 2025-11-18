@@ -31,11 +31,11 @@ jobs:
       - name: Run coverage for all packages
         run: yarn workspaces run test:run:coverage
 
-      - name: Install istanbul-badges-readme
-        run: yarn add istanbul-badges-readme --dev -W
+      - name: Install monorepo-coverage-badges
+        run: yarn add monorepo-coverage-badges --dev -W
 
       - name: Generate and Update Coverage Badges
-        run: yarn istanbul-badges-readme
+        run: yarn monorepo-coverage-badges
 
       - name: Commit and Push changes
         run: |
