@@ -1,0 +1,83 @@
+name: Coverage Report and README Update
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-and-update-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # We need to fetch all history for the commit to be able to push back
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build core package (required for coverage)
+        run: yarn workspace @convolver-player/core build
+
+      - name: Run coverage for all packages
+        run: yarn workspaces foreach run test:run:coverage
+
+      - name: Install istanbul-badges-reporter
+        run: yarn add istanbul-badges-reporter --dev
+
+      - name: Create badges directory
+        run: mkdir -p .github/badges
+
+      - name: Generate Core Coverage Badge
+        run: yarn istanbul-badges-reporter --istanbul-input packages/core/convolver-player-core/coverage/coverage-final.json --output-dir .github/badges --badge-title "Core Coverage"
+
+      - name: Generate Vue Coverage Badge
+        run: yarn istanbul-badges-reporter --istanbul-input packages/vue/vue-convolver-player/coverage/coverage-final.json --output-dir .github/badges --badge-title "Vue Coverage"
+
+      - name: Generate React Coverage Badge
+        run: yarn istanbul-badges-reporter --istanbul-input packages/react/react-convolver-player/coverage/coverage-final.json --output-dir .github/badges --badge-title "React Coverage"
+
+      - name: Update README.md with badges
+        run: |
+          # Function to insert badge under a heading
+          insert_badge() {
+            local package_name="$1"
+            local badge_path="$2"
+            local heading_pattern="### \`$package_name\`"
+            local badge_markdown="![${package_name} Coverage](.github/badges/${badge_path})"
+
+            # Check if the badge is already there to prevent duplicates
+            if ! grep -q "${badge_markdown}" README.md; then
+              # Use awk to find the heading and insert the badge below it
+              awk -v heading="${heading_pattern}" -v badge="${badge_markdown}" \
+                '$0 ~ heading {
+                  print;
+                  print ""; # Add a blank line for spacing
+                  print badge;
+                  next;
+                }
+                { print }
+              ' README.md > README.md.tmp && mv README.md.tmp README.md
+            fi
+          }
+
+          insert_badge "@convolver-player/core" "core-coverage.svg"
+          insert_badge "@convolver-player/vue" "vue-coverage.svg"
+          insert_badge "@convolver-player/react" "react-coverage.svg"
+
+      - name: Commit and Push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md .github/badges/*.svg
+          git commit -m "docs: Update coverage badges [skip ci]" || echo "No changes to commit"
+          git push
