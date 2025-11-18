@@ -58,6 +58,12 @@ yarn workspace @convolver-player/react dev
 
 This will typically open a local development server (e.g., `http://localhost:5173`) where you can see the component in action and make live changes.
 
+To start development servers for all UI packages simultaneously, run:
+
+```bash
+yarn dev
+```
+
 ### 3. Building
 
 To build a specific package for production, use the `yarn workspace` command with the `build` script. For example, to build the Vue component:
@@ -80,6 +86,12 @@ yarn workspace @convolver-player/core build
 
 These commands will compile the respective package into its distributable format.
 
+To build all packages in the monorepo for production, run:
+
+```bash
+yarn build
+```
+
 ### 4. Testing
 
 To run the unit tests for a specific package, use the `yarn workspace` command with the `test:run` script. This will execute all tests once and report the results:
@@ -100,7 +112,13 @@ Or for the core library:
 yarn workspace @convolver-player/core test:run
 ```
 
-If you wish to run tests with coverage reporting:
+To run all unit tests across all packages in the monorepo, run:
+
+```bash
+yarn test
+```
+
+If you wish to run tests with coverage reporting for a specific package:
 
 ```bash
 yarn workspace @convolver-player/vue test:run:coverage
@@ -118,6 +136,12 @@ Or for the core library:
 yarn workspace @convolver-player/core test:run:coverage
 ```
 
+To run all unit tests with coverage reporting across all packages in the monorepo, run:
+
+```bash
+yarn test:coverage
+```
+
 ## Contributing
 
 Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please open an issue to discuss them before submitting a pull request. This helps ensure alignment with the project's goals and reduces the chance of duplicated effort.
@@ -128,5 +152,5 @@ Contributions are welcome! If you have ideas for new features, improvements, or 
 2.  Create a new branch for your feature or bug fix.
 3.  Make your changes, ensuring they adhere to the existing code style and conventions.
 4.  Write or update tests as appropriate.
-5.  Ensure all tests pass (`yarn workspace @convolver-player/vue test:run`).
+5. Ensure all tests pass (`yarn test`).
 6.  Submit a pull request with a clear description of your changes.
