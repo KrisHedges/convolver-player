@@ -14,13 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          # Checkout the code to the root of the workspace
-          path: .
-          # We need to fetch all history for changeset to work correctly
-          fetch-depth: 0
-          # Use the PAT to allow the workflow to create pull requests
-          token: ${{ secrets.GH_PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
