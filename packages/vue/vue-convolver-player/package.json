@@ -1,7 +1,7 @@
 {
   "name": "@convolver-player/vue",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "author": "Kris Hedges",
   "repository": {
@@ -51,7 +51,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@convolver-player/core": "1.1.0"
+    "@convolver-player/core": "1.2.0"
   },
   "peerDependencies": {
     "vue": "^3.5.24"
