@@ -32,6 +32,5 @@ jobs:
           # This expects you to have a script called `release` in your root package.json
           publish: yarn release
         env:
-          # Use the PAT for GitHub Token to allow PR creation
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
