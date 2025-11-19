@@ -37,8 +37,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:lib": "tsc && vite build",
+    "build": "tsc && vite build -c vite.config.build.ts",
+    "build:lib": "tsc && vite build -c vite.config.build.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
@@ -50,20 +50,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@convolver-player/core": "1.2.0"
+    "@convolver-player/core": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@testing-library/dom": "^8.0.0",
+    "@eslint/js": "latest",
+    "@testing-library/dom": "latest",
     "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "latest",
     "@testing-library/user-event": "^14.5.2",
     "@types/highlight.js": "^10.1.0",
     "@types/node": "^24.10.0",
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
     "@types/testing-library__react": "^10.2.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
@@ -71,19 +73,19 @@
     "@vitest/coverage-v8": "latest",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "globals": "latest",
     "highlight.js": "^11.11.1",
     "jsdom": "^25.0.0",
     "prettier": "^3.6.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "npm:rolldown-vite@7.2.2",
+    "vite": "latest",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "latest"
-  },
-  "resolutions": {
-    "vite": "npm:rolldown-vite@7.2.2"
   }
 }

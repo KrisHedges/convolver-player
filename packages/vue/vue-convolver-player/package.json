@@ -1,6 +1,5 @@
 {
   "name": "@convolver-player/vue",
-  "private": false,
   "version": "0.3.0",
   "license": "MIT",
   "author": "Kris Hedges",
@@ -38,8 +37,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "build:lib": "vue-tsc -b && vite build",
+    "build": "vue-tsc -b && vite build -c vite.config.build.ts",
+    "build:lib": "vue-tsc -b && vite build -c vite.config.build.ts",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest --run",
@@ -51,18 +50,18 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@convolver-player/core": "1.2.0"
+    "@convolver-player/core": "workspace:*",
+    "@vue/compiler-dom": "^3.5.24",
+    "vue": "^3.5.24"
   },
   "peerDependencies": {
     "vue": "^3.5.24"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.4",
-    "@typescript-eslint/parser": "^8.46.4",
-    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue": "latest",
     "@vitest/coverage-v8": "latest",
-    "@vue/test-utils": "^2.4.6",
+    "@vue/test-utils": "latest",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
@@ -72,13 +71,10 @@
     "prettier": "^3.6.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "npm:rolldown-vite@7.2.2",
+    "vite": "latest",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "latest",
     "vue-eslint-parser": "^10.2.0",
-    "vue-tsc": "^3.1.3"
-  },
-  "resolutions": {
-    "vite": "npm:rolldown-vite@7.2.2"
+    "vue-tsc": "latest"
   }
 }

@@ -14,14 +14,12 @@ export default defineConfig({
       reporter: ['text', 'json', 'html', 'json-summary'],
       exclude: ['node_modules/', 'demo/', 'dist/', '**/*.d.ts'],
     },
+    deps: {
+      interopDefault: true,
+    },
   },
   resolve: {
     preserveSymlinks: true,
-    alias: {
-      '@testing-library/jest-dom': resolve(
-        __dirname,
-        '../../../node_modules/@testing-library/jest-dom'
-      ),
-    },
+
   },
 });
