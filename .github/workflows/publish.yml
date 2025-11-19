@@ -17,6 +17,10 @@ jobs:
         with:
           # Checkout the code to the root of the workspace
           path: .
+          # We need to fetch all history for changeset to work correctly
+          fetch-depth: 0
+          # Use the PAT to allow the workflow to create pull requests
+          token: ${{ secrets.GH_PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,6 +39,6 @@ jobs:
           # This expects you to have a script called `release` in your root package.json
           publish: yarn release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Use the PAT for GitHub Token to allow PR creation
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        # working-directory: .  <-- REMOVED THIS LINE
