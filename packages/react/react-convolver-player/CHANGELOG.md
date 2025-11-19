@@ -1,5 +1,16 @@
 # @convolver-player/react
 
+## 0.3.0
+
+### Minor Changes
+
+- a50c197: Version bump for release
+
+### Patch Changes
+
+- Updated dependencies [a50c197]
+  - @convolver-player/core@1.2.0
+
 ## 0.2.0
 
 ### Minor Changes
