@@ -18,6 +18,14 @@ export default [
   ...tseslint.configs.recommended,
   ...pluginVue.configs["flat/essential"],
   {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { "argsIgnorePattern": "^_" }
+      ]
+    }
+  },
+  {
     files: ["**/*.vue"],
     languageOptions: {
       parser: vueParser,

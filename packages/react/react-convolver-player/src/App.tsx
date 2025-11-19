@@ -91,7 +91,7 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Single Use Example</h2>
         <p>
-          Here's the simplest use case: a single instance of the <code>ConvolverPlayer</code>{' '}
+          Here&apos;s the simplest use case: a single instance of the <code>ConvolverPlayer</code>{' '}
           component. Just point it to your wav file to use, and it will handle the AudioContext
           creation for you.
         </p>
@@ -106,7 +106,7 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Multi-Use Example (Shared AudioContext)</h2>
         <p>
-          When using multiple <code>ConvolverPlayer</code> components on the same page, it's best
+          When using multiple <code>ConvolverPlayer</code> components on the same page, it&apos;s best
           practice to share a single <code>AudioContext</code> instance. This prevents resource
           exhaustion and potential performance issues that can arise from creating multiple
           contexts. The <code>ConvolverPlayer</code> component accepts an <code>audioContext</code>{' '}
@@ -136,7 +136,7 @@ function MyMultiPlayerComponent() {
       <section>
         <h2>Component Structure</h2>
         <p>
-          The component's class structure can be targeted with your CSS. Here's a breakdown of the
+          The component&apos;s class structure can be targeted with your CSS. Here&apos;s a breakdown of the
           main elements:
         </p>
         <pre>
@@ -165,11 +165,11 @@ function MyMultiPlayerComponent() {
         <h2>Styling Example</h2>
         <p>
           Below is the CSS used in this demo application to style the <code>ConvolverPlayer</code>{' '}
-          component. You can adapt these styles or create your own to match your application's
+          component. You can adapt these styles or create your own to match your application&apos;s
           theme.
         </p>
         <p>
-          The waveform itself will attempt to use the browser's <code>accent-color</code> for its
+          The waveform itself will attempt to use the browser&apos;s <code>accent-color</code> for its
           primary color. If <code>accent-color</code> is not available, it will fall back to a
           default blue (<code>#007aff</code>).
         </p>

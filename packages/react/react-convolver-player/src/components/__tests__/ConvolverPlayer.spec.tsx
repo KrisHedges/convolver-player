@@ -4,9 +4,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import ConvolverPlayer from '../ConvolverPlayer';
 import {
   MockAudioContext,
-  MockAudioBufferSourceNode,
-  MockConvolverNode,
-  MockGainNode,
 } from '../../../vitest.setup'; // Import the mock classes
 
 // Define mockCanvasContext once at the top level
@@ -22,38 +19,30 @@ vi.mock('@convolver-player/core', async (importOriginal) => {
   const actual = await importOriginal();
 
   let shouldThrowError = false;
-  const loadAudioBuffer = vi.fn(async (audioContext: any, path) => {
+  const loadAudioBuffer = vi.fn(async (audioContext: AudioContext, path) => {
     if (shouldThrowError && path === '/error-ir.wav') {
       throw new Error('Failed to load audio buffer');
     }
     await new Promise(resolve => setTimeout(resolve, 100)); // Simulate loading delay
     // Simulate loading an audio buffer and call decodeAudioData
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const buffer = new (window.AudioBuffer as any)({ length: 44100, sampleRate: 44100 });
     await audioContext.decodeAudioData(new ArrayBuffer(8)); // Call the mocked decodeAudioData
     return buffer;
   });
 
   // Expose a way to control the mock's behavior
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (loadAudioBuffer as any)._setShouldThrowError = (value: boolean) => {
     shouldThrowError = value;
   };
 
-  // Define a mock class for ConvolverProcessor outside the return object
-  class MockConvolverProcessor {
-    constructor(options: any) {
-      // You can spy on the constructor call if needed
-      // console.log('MockConvolverProcessor constructor called with:', options);
-    }
-    updateIrBuffer = vi.fn();
-    setWetDryMix = vi.fn();
-    play = vi.fn();
-    dispose = vi.fn();
-  }
+
 
   return {
     ...actual,
     loadAudioBuffer,
-    drawWaveform: vi.fn((canvasContext, buffer, color) => {
+    drawWaveform: vi.fn((_canvasContext, _buffer, _color) => {
       mockCanvasContext.clearRect(0, 0, mockCanvasContext.canvas.width, mockCanvasContext.canvas.height);
       mockCanvasContext.beginPath();
       mockCanvasContext.lineTo(0, 0);
@@ -61,7 +50,7 @@ vi.mock('@convolver-player/core', async (importOriginal) => {
     }),
     setupCanvasContext: vi.fn(() => mockCanvasContext),
     getAccentColor: vi.fn(() => '#000000'),
-    ConvolverProcessor: vi.fn().mockImplementation(function(this: any, options: any) {
+    ConvolverProcessor: vi.fn().mockImplementation(function(this: unknown, _options: unknown) {
       this.updateIrBuffer = vi.fn();
       this.setWetDryMix = vi.fn();
       this.play = vi.fn();
@@ -74,11 +63,16 @@ vi.mock('@convolver-player/core', async (importOriginal) => {
 import {
   loadAudioBuffer,
   drawWaveform,
-  setupCanvasContext,
   ConvolverProcessor,
 } from '@convolver-player/core';
 
 describe('ConvolverPlayer', () => {
+  type MockConvolverProcessorInstance = {
+    updateIrBuffer: vi.Mock;
+    setWetDryMix: vi.Mock;
+    play: vi.Mock;
+    dispose: vi.Mock;
+  };
   let mockAudioContextInstance: MockAudioContext;
   // mockCanvasContext is now a const at the top level
 
@@ -92,11 +86,13 @@ describe('ConvolverPlayer', () => {
     vi.spyOn(mockAudioContextInstance, 'createGain');
     vi.spyOn(mockAudioContextInstance, 'resume');
     vi.spyOn(mockAudioContextInstance, 'close');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (loadAudioBuffer as any)._setShouldThrowError(false); // Ensure mock is reset before each test
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (loadAudioBuffer as any)._setShouldThrowError(false); // Ensure mock is reset after each test
   });
 
@@ -111,6 +107,7 @@ describe('ConvolverPlayer', () => {
     const originalConsoleError = console.error;
     console.error = vi.fn(); // Temporarily suppress console.error
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (loadAudioBuffer as any)._setShouldThrowError(true); // Configure mock to throw error
     render(<ConvolverPlayer irFilePath="/error-ir.wav" />);
 
@@ -118,6 +115,7 @@ describe('ConvolverPlayer', () => {
       expect(loadAudioBuffer).toHaveBeenCalledWith(mockAudioContextInstance, '/error-ir.wav');
       expect(screen.getByText(/Error loading IR/i)).toBeInTheDocument();
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (loadAudioBuffer as any)._setShouldThrowError(false); // Reset mock behavior
     console.error = originalConsoleError; // Restore original console.error
   });
@@ -149,7 +147,7 @@ describe('ConvolverPlayer', () => {
     await waitFor(() => expect(loadAudioBuffer).toHaveBeenCalledWith(mockAudioContextInstance, irFilePath));
 
     // Wait for the ConvolverProcessor instance to be created
-    let convolverProcessorInstance: any;
+    let convolverProcessorInstance: MockConvolverProcessorInstance;
     await waitFor(() => {
       expect(ConvolverProcessor.mock.instances.length).toBeGreaterThan(0);
       convolverProcessorInstance = ConvolverProcessor.mock.instances[0];
@@ -191,7 +189,7 @@ describe('ConvolverPlayer', () => {
     await userEvent.click(playButton);
 
     // Wait for the ConvolverProcessor instance to be created
-    let convolverProcessorInstance: any;
+    let convolverProcessorInstance: MockConvolverProcessorInstance;
     await waitFor(() => {
       expect(ConvolverProcessor.mock.instances.length).toBeGreaterThan(0);
       convolverProcessorInstance = ConvolverProcessor.mock.instances[0];
@@ -235,7 +233,7 @@ describe('ConvolverPlayer', () => {
     const { unmount } = render(<ConvolverPlayer irFilePath="/test-ir.wav" />);
 
     // Wait for the ConvolverProcessor instance to be created
-    let convolverProcessorInstance: any;
+    let convolverProcessorInstance: MockConvolverProcessorInstance;
     await waitFor(() => {
       expect(ConvolverProcessor.mock.instances.length).toBeGreaterThan(0);
       convolverProcessorInstance = ConvolverProcessor.mock.instances[0];

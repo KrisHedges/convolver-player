@@ -9,10 +9,10 @@
     "packages/react/*"
   ],
   "scripts": {
-    "dev": "yarn workspaces run dev",
+    "dev": "yarn workspaces foreach --all --parallel --interlaced run dev",
     "build": "yarn workspaces foreach --all --topological run build",
     "test": "yarn workspaces foreach --all --topological run test:run",
-    "test:coverage": "yarn workspaces run test:run:coverage",
+    "test:coverage": "yarn workspaces foreach --all --topological run test:run:coverage",
     "lint": "yarn workspaces foreach --all run lint",
     "changeset": "changeset",
     "version": "changeset version",
