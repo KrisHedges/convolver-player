@@ -718,6 +718,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@convolver-player/core", "workspace:packages/core/convolver-player-core"],\
           ["@convolver-player/vue", "workspace:packages/vue/vue-convolver-player"],\
+          ["@eslint/js", "npm:9.39.1"],\
           ["@types/node", "npm:24.10.1"],\
           ["@vitejs/plugin-vue", "virtual:d237786f6e75f716f7906af83938358088eb149acf1963ea054408a8c1f12fcc9555e9a3ba3db7de2c30418d05f8f6b8821445609bf711d95b19f35a19a22052#npm:6.0.2"],\
           ["@vitest/coverage-v8", "virtual:081ca7094634c366e3ff4bb344050e7137d0df76393fbd4743abf751d06d9a2784dbacd084433a1d53167f8baabb59d09fb449196e961a34619ed6f5e2190a85#npm:4.0.10"],\
@@ -727,6 +728,7 @@ const RAW_RUNTIME_STATE =
           ["eslint", "virtual:250229be64c0f498f4ab91ecdab23521102342382890377c1314f9c7c75a5d258c3751bebba0809d8e6bb699d9d38a05f9164a0d7e3268d35117f5e2d136367c#npm:9.39.1"],\
           ["eslint-config-prettier", "virtual:250229be64c0f498f4ab91ecdab23521102342382890377c1314f9c7c75a5d258c3751bebba0809d8e6bb699d9d38a05f9164a0d7e3268d35117f5e2d136367c#npm:10.1.8"],\
           ["eslint-plugin-vue", "virtual:d237786f6e75f716f7906af83938358088eb149acf1963ea054408a8c1f12fcc9555e9a3ba3db7de2c30418d05f8f6b8821445609bf711d95b19f35a19a22052#npm:10.5.1"],\
+          ["globals", "npm:16.5.0"],\
           ["highlight.js", "npm:11.11.1"],\
           ["jsdom", "virtual:081ca7094634c366e3ff4bb344050e7137d0df76393fbd4743abf751d06d9a2784dbacd084433a1d53167f8baabb59d09fb449196e961a34619ed6f5e2190a85#npm:25.0.1"],\
           ["prettier", "npm:3.6.2"],\

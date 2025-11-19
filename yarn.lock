@@ -581,6 +581,7 @@ __metadata:
   resolution: "@convolver-player/vue@workspace:packages/vue/vue-convolver-player"
   dependencies:
     "@convolver-player/core": "workspace:*"
+    "@eslint/js": "npm:latest"
     "@types/node": "npm:^24.10.0"
     "@vitejs/plugin-vue": "npm:latest"
     "@vitest/coverage-v8": "npm:latest"
@@ -590,6 +591,7 @@ __metadata:
     eslint: "npm:^9.39.1"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-vue: "npm:^10.5.1"
+    globals: "npm:latest"
     highlight.js: "npm:^11.11.1"
     jsdom: "npm:^25.0.0"
     prettier: "npm:^3.6.2"

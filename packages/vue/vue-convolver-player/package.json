@@ -58,6 +58,7 @@
     "vue": "^3.5.24"
   },
   "devDependencies": {
+    "@eslint/js": "latest",
     "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "latest",
     "@vitest/coverage-v8": "latest",
@@ -66,6 +67,7 @@
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.5.1",
+    "globals": "latest",
     "highlight.js": "^11.11.1",
     "jsdom": "^25.0.0",
     "prettier": "^3.6.2",
