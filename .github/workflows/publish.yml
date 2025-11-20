@@ -25,6 +25,13 @@ jobs:
         run: yarn install --immutable
         working-directory: .
 
+      - name: Create .npmrc for scoped packages
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "@convolver-player:registry=https://registry.npmjs.org/" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Verify NPM Auth
         run: npm whoami
         env:
