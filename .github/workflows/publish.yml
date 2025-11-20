@@ -43,7 +43,18 @@ jobs:
         uses: changesets/action@v1
         with:
           # This expects you to have a script called `release` in your root package.json
-          publish: yarn release
+          publish: yarn build # We will handle actual publishing manually
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to NPM
+        if: steps.changesets.outputs.publishedPackages != ''
+        run: |
+          for PKG in ${{ steps.changesets.outputs.publishedPackages }}; do
+            echo "Publishing package $PKG"
+            npm publish --access public --tag latest --registry https://registry.npmjs.org/ "$PKG"
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
