@@ -21,6 +21,11 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
+      # Ensure @changesets/cli is available in PATH
+      - name: Setup Changesets CLI
+        run: |
+          echo "$(yarn bin @changesets/cli)" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: yarn install --immutable
         working-directory: .
