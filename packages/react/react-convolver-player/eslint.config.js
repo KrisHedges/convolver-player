@@ -1,58 +1,33 @@
-import globals from 'globals';
-import js from '@eslint/js';
-import ts from 'typescript-eslint';
-import react from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
-import prettier from 'eslint-config-prettier';
+// eslint.config.js
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint";
+import pluginReact from "eslint-plugin-react";
 
 export default [
   {
-    ignores: ['dist', 'coverage', '.prettierrc.cjs', '**/.#*'],
-  },
-  js.configs.recommended,
-  ...ts.configs.recommended,
-  {
-    files: ['**/*.{js,jsx,ts,tsx}'],
-    ...react.configs.flat.recommended,
+    plugins: {
+      react: pluginReact,
+    },
     languageOptions: {
-      parser: ts.parser,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
       globals: {
         ...globals.browser,
         ...globals.node,
       },
     },
-    plugins: {
-      react,
-      'react-hooks': reactHooks,
-    },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react/react-in-jsx-scope': 'off', // For React 17+ JSX transform
-      'react/prop-types': 'off', // Using TypeScript for prop types
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-        },
-      ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      ...pluginReact.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
     },
   },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ['**/*.spec.{ts,tsx}'],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  prettier,
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { "argsIgnorePattern": "^_" }
+      ]
+    }
+  }
 ];

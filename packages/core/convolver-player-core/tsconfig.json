@@ -10,6 +10,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "src/types.ts"],
+  "include": ["src"],
   "exclude": ["src/**/*.spec.ts", "src/__tests__"]
 }
