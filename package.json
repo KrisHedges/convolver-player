@@ -14,6 +14,7 @@
     "test": "yarn workspaces foreach --all --topological run test:run",
     "test:coverage": "yarn workspaces foreach --all --topological run test:run:coverage",
     "lint": "yarn workspaces foreach --all run lint",
+    "typecheck": "yarn workspaces foreach --all run typecheck",
     "changeset": "changeset",
     "version": "changeset version",
     "release": "yarn build && changeset publish"
