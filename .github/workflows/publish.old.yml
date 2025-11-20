@@ -9,31 +9,24 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed for changesets to commit version bumps
-      pull-requests: write # Might be needed if we want to create a PR for the version bump (though we'll push directly)
-
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          # This is essential for changesets to push commits back to the main branch
-          # without triggering additional workflows (i.e., infinite loop)
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'yarn' # Cache yarn dependencies
 
       - name: Install dependencies
         run: yarn install --immutable
+        working-directory: .
 
+      # Configure Git for changesets/publishing
       - name: Configure Git User
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # Create .npmrc for scoped packages
+      # This is still needed for npm publish calls
       - name: Create NPM RC
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
@@ -47,34 +40,27 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Build all packages
-        run: yarn build
-
+      # Detect if any changesets exist (if not, exit early)
       - name: Detect Changesets
         id: detect
         run: |
           if [ -z "$(ls .changeset | grep .md)" ]; then
-            echo "No changesets found. Skipping versioning and publish."
+            echo "No changesets found. Skipping publish."
             echo "::set-output name=hasChangesets::false"
           else
-            echo "Changesets found. Proceeding with versioning and publish."
+            echo "Changesets found. Proceeding with publish."
             echo "::set-output name=hasChangesets::true"
           fi
 
+      # Run changeset version (this creates the release commit and tags)
       - name: Version packages with Changesets
         if: steps.detect.outputs.hasChangesets == 'true'
         run: yarn dlx @changesets/cli version
 
-      - name: Push version commit and tags
-        if: steps.detect.outputs.hasChangesets == 'true'
-        run: |
-          git push origin main --follow-tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Ensure GITHUB_TOKEN is available for pushing
-
+      # Publish packages to NPM
       - name: Publish packages to NPM
         if: steps.detect.outputs.hasChangesets == 'true'
         run: yarn dlx @changesets/cli publish
         env:
-          # Ensure NPM_TOKEN is available for changesets/npm
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
