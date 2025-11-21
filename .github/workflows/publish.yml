@@ -16,6 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           # This is essential for changesets to push commits back to the main branch
           # without triggering additional workflows (i.e., infinite loop)
           token: ${{ secrets.GITHUB_TOKEN }}
