@@ -55,22 +55,13 @@ jobs:
         run: |
           if [ -z "$(ls .changeset | grep .md)" ]; then
             echo "No changesets found. Skipping versioning and publish."
-            echo "::set-output name=hasChangesets::false"
           else
             echo "Changesets found. Proceeding with versioning and publish."
-            echo "::set-output name=hasChangesets::true"
           fi
 
-            - name: Create Release PR or Publish to NPM
-
-              id: changesets
-
-              uses: changesets/action@v1
-
-              env:
-
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-                NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      
+      - name: Create Release PR or Publish to NPM
+        id: changesets
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
