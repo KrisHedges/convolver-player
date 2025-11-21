@@ -570,9 +570,6 @@ __metadata:
     vite: "npm:latest"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:latest"
-  peerDependencies:
-    react: 19.2.0
-    react-dom: 19.2.0
   languageName: unknown
   linkType: soft
 
@@ -603,8 +600,6 @@ __metadata:
     vue: "npm:^3.5.24"
     vue-eslint-parser: "npm:^10.2.0"
     vue-tsc: "npm:latest"
-  peerDependencies:
-    vue: ^3.5.24
   languageName: unknown
   linkType: soft
 
