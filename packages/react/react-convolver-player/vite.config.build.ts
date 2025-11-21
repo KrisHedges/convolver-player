@@ -12,19 +12,13 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
   resolve: {
     alias: {
       '@convolver-player/core': resolve(
         __dirname,
-        '../../core/convolver-player-core/dist'
+        '../../core/convolver-player-core/src/index.ts'
       ),
     },
   },
