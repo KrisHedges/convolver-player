@@ -6,3 +6,10 @@ dist/
 *debug.log
 **/*.vue.js
 packages/vue/vue-convolver-player/src/**/*.js
+
+# Yarn
+.pnp.*
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/cache
+.yarn/unplugged
