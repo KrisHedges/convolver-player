@@ -61,13 +61,16 @@ jobs:
             echo "::set-output name=hasChangesets::true"
           fi
 
-      - name: Create Release PR or Publish to NPM
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # This will run 'yarn install --immutable' and 'yarn build'
-          version: yarn changeset version
-          publish: yarn changeset publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - name: Create Release PR or Publish to NPM
+
+              id: changesets
+
+              uses: changesets/action@v1
+
+              env:
+
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+                NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      
