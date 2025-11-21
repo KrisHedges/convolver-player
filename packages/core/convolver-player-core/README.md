@@ -1,18 +1,9 @@
 # @convolver-player/core
 
+> [!CAUTION]
+> This is an internal package and is not intended for direct use. The logic in this package is bundled with the framework-specific components.
+
 This package contains the core, framework-agnostic logic for the Convolver Player components. It provides functions for audio processing (Web Audio API management, impulse response loading, convolution, gain control) and waveform visualization. This package is designed to be consumed by framework-specific component implementations like `@convolver-player/react` and `@convolver-player/vue`.
-
-## Installation
-
-```bash
-npm install @convolver-player/core
-```
-
-or
-
-```bash
-yarn add @convolver-player/core
-```
 
 ## API
 

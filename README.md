@@ -12,7 +12,7 @@ This project is managed as a monorepo using [Yarn Workspaces](https://classic.ya
 
 | Package | npm | License | Description |
 | --- | --- | --- | --- |
-| `@convolver-player/core` | [![npm](https://img.shields.io/npm/v/@convolver-player/core.svg)](https://www.npmjs.com/package/@convolver-player/core) | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) | Core logic for Convolver Player components. |
+| `@convolver-player/core` | [![npm](https://img.shields.io/npm/v/@convolver-player/core.svg)](https://www.npmjs.com/package/@convolver-player/core) | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) | Internal package containing the core logic. Not intended for direct use. |
 | `@convolver-player/react` | [![npm](https://img.shields.io/npm/v/@convolver-player/react.svg)](https://www.npmjs.com/package/@convolver-player/react) | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) | React component for convolution reverb. |
 | `@convolver-player/vue` | [![npm](https://img.shields.io/npm/v/@convolver-player/vue.svg)](https://www.npmjs.com/package/@convolver-player/vue) | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) | Vue component for convolution reverb. |
 
