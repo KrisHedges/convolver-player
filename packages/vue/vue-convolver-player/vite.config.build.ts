@@ -22,7 +22,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@convolver-player/core': path.resolve(__dirname, '../../core/convolver-player-core/dist'),
+      '@convolver-player/core': path.resolve(__dirname, '../../core/convolver-player-core/src/index.ts'),
     },
   },
 });
