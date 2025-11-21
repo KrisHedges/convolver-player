@@ -1,5 +1,12 @@
 # @convolver-player/vue
 
+## 0.4.0
+
+### Minor Changes
+
+- b5e40dd: Bundle core lib with components
+- c2fe0c4: Initial Release
+
 ## 0.3.0
 
 ### Minor Changes

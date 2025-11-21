@@ -1,5 +1,12 @@
 # @convolver-player/core
 
+## 1.3.0
+
+### Minor Changes
+
+- b5e40dd: Bundle core lib with components
+- c2fe0c4: Initial Release
+
 ## 1.2.0
 
 ### Minor Changes
