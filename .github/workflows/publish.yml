@@ -65,12 +65,14 @@ jobs:
         if: steps.detect.outputs.hasChangesets == 'true'
         run: yarn dlx @changesets/cli version
 
-      - name: Push version commit and tags
+      - name: Commit and Push Changes
         if: steps.detect.outputs.hasChangesets == 'true'
         run: |
+          git add .
+          git commit -m "chore: Version packages"
           git push origin main --follow-tags
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Ensure GITHUB_TOKEN is available for pushing
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish packages to NPM
         if: steps.detect.outputs.hasChangesets == 'true'
