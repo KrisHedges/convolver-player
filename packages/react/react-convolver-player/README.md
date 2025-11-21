@@ -18,6 +18,9 @@ or
 yarn add @convolver-player/react
 ```
 
+> [!NOTE]
+> The `@convolver-player/core` package is bundled with this component and does not need to be installed separately.
+
 ## Usage
 
 The `ConvolverPlayer` component is designed to be unstyled by default, giving you complete control over its appearance. You will need to provide your own CSS to style the component. The waveform display will attempt to use the browser's `accent-color` for the waveform, with a fallback to a default blue color if `accent-color` is not available.
