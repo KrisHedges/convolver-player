@@ -50,7 +50,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@convolver-player/core": "workspace:*",
+    "@convolver-player/core": "workspace:^",
     "@eslint/js": "latest",
     "@testing-library/dom": "latest",
     "@testing-library/jest-dom": "^6.4.2",

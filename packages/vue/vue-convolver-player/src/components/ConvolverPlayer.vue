@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, onMounted, onBeforeUnmount, computed, withDefaults } from 'vue';
+  import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
   import PlayIcon from './PlayIcon.vue';
   import {
     loadAudioBuffer,
@@ -47,10 +47,7 @@
   } from '@convolver-player/core';
   import type { TestSound } from '@convolver-player/core/types';
 
-  const props = withDefaults(defineProps<{
-    irFilePath?: string | null;
-    audioContext?: AudioContext | null;
-  }>(), {
+  const props = withDefaults(defineProps<{ irFilePath?: string | null; audioContext?: AudioContext | null; }>(), {
     irFilePath: null,
     audioContext: undefined,
   });

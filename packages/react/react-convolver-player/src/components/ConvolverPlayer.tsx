@@ -30,15 +30,17 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
   const localAudioContextRef = useRef<AudioContext | null>(null);
   const [irBuffer, setIrBuffer] = useState<AudioBuffer | null>(null);
   const [irInfo, setIrInfo] = useState<string>('');
-  const [wetDryMix, setWetDryMix] = useState<number>(0.75);
   const [isAudioContextReady, setIsAudioContextReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true); // New loading state
+
+  const wetDryMix = 0.75;
 
   const getAudioContext = useCallback(() => {
     if (propAudioContext) {
       return propAudioContext;
     }
     if (!localAudioContextRef.current) {
+      // @ts-expect-error proprietary fallback for Safari
       localAudioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
     return localAudioContextRef.current;
@@ -68,6 +70,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
         convolverProcessorRef.current = new ConvolverProcessor({
           audioContext: audioContext,
           irBuffer: irBuffer,
+          wetGainValue: wetDryMix,
         });
       } else {
         convolverProcessorRef.current.updateIrBuffer(irBuffer);
@@ -82,7 +85,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
     };
   }, [irBuffer, getAudioContext]);
 
-  // New useEffect for just the mix
+  // New useEffect for just the mix so sad
   useEffect(() => {
     if (convolverProcessorRef.current) {
       convolverProcessorRef.current.setWetDryMix(wetDryMix);
@@ -156,7 +159,6 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
 
   const handleWetDryMixChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const mix = parseFloat(event.target.value);
-    setWetDryMix(mix);
     convolverProcessorRef.current?.setWetDryMix(mix);
   }, []);
 

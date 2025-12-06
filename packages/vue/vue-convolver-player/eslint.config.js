@@ -6,6 +6,7 @@ import pluginVue from "eslint-plugin-vue";
 import vueParser from "vue-eslint-parser";
 
 export default [
+  { ignores: ["dist", "coverage"] },
   {
     languageOptions: {
       globals: {

@@ -5,6 +5,7 @@ import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 
 export default [
+  { ignores: ["dist"] },
   {
     plugins: {
       react: pluginReact,
