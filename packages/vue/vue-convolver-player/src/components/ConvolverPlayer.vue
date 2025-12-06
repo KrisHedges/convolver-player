@@ -44,8 +44,8 @@
     drawWaveform,
     setupCanvasContext,
     getAccentColor,
+    type TestSound
   } from '@convolver-player/core';
-  import type { TestSound } from '@convolver-player/core/types';
 
   const props = withDefaults(defineProps<{ irFilePath?: string | null; audioContext?: AudioContext | null; }>(), {
     irFilePath: null,
