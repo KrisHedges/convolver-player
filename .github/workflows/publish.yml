@@ -24,8 +24,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn' # Cache yarn dependencies
+          node-version: "22"
+          cache: "yarn" # Cache yarn dependencies
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -64,7 +64,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: yarn version
+          version: yarn changeset version
           publish: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

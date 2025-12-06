@@ -54,7 +54,7 @@ yarn test
 
 ## Publishing to npm
 
-This project uses [Changesets](https://github.com/changesets/changesets) to manage versioning and publishing.
+This project uses [Changesets](https://github.com/changesets/changesets) for versioning and publishing, which is fully automated via GitHub Actions.
 
 ### 1. Add a Changeset
 
@@ -64,27 +64,16 @@ When you have made a change that you want to be released, run:
 yarn changeset
 ```
 
-This will ask you a series of questions about the changes you have made, and then generate a new changeset file.
+This will ask you a series of questions about the changes you have made, and then generate a new changeset file. Commit this file along with your code.
 
-### 2. Versioning
+### 2. Versioning & Publishing (Automated)
 
-To apply the changesets and update the package versions and changelogs, run:
+When you push your changes to the `main` branch:
 
-```bash
-yarn changeset version
-```
+1. **Version Packages PR**: GitHub Actions will automatically detect the changeset and create a "Version Packages" Pull Request. This PR will calculate the new versions and update `package.json` and `CHANGELOG.md` files.
+2. **Publish**: When you review and merge the "Version Packages" PR, GitHub Actions will automatically tag and publish the updated packages to npm.
 
-This will consume the changeset files and update the `package.json` versions and `CHANGELOG.md` files.
-
-### 3. Publishing
-
-To publish the packages to npm, run:
-
-```bash
-yarn changeset publish
-```
-
-This will publish all packages that have been updated. You will need to be logged in to npm with `yarn login`.
+**Note**: You do not need to manually run `version` or `publish` commands locally.
 
 ## Contributing
 
