@@ -1,5 +1,11 @@
 # @convolver-player/core
 
+## 1.4.1
+
+### Patch Changes
+
+- 2659477: bug fix for react component and fixes for types and dx
+
 ## 1.4.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @convolver-player/react
 
+## 0.5.1
+
+### Patch Changes
+
+- 2659477: bug fix for react component and fixes for types and dx
+
 ## 0.5.0
 
 ### Minor Changes
