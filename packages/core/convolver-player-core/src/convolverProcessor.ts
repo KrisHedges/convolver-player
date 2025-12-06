@@ -57,7 +57,8 @@ export class ConvolverProcessor {
 
       this.timeoutId = window.setTimeout(() => {
                   // wetGain and dryGain are persistent, only disconnect convolverNode
-                  this.convolverNode.disconnect(); // Disconnect persistent convolverNode        this.timeoutId = null;
+                  this.convolverNode.disconnect(); // Disconnect persistent convolverNode
+                  this.timeoutId = null;
         resolve();
       }, timeoutDelay);
     });
