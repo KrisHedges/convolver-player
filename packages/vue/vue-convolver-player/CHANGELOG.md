@@ -1,5 +1,11 @@
 # @convolver-player/vue
 
+## 0.5.2
+
+### Patch Changes
+
+- 2669217: depency upgrades
+
 ## 0.5.1
 
 ### Patch Changes
