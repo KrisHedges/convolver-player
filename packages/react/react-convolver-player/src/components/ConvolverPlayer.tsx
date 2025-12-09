@@ -33,7 +33,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
   const [isAudioContextReady, setIsAudioContextReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true); // New loading state
 
-  const wetDryMix = 0.75;
+  const [wetDryMix, setWetDryMix] = useState<number>(0.75);
 
   const getAudioContext = useCallback(() => {
     if (propAudioContext) {
@@ -159,7 +159,7 @@ const ConvolverPlayer: React.FC<ConvolverPlayerProps> = ({
 
   const handleWetDryMixChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const mix = parseFloat(event.target.value);
-    convolverProcessorRef.current?.setWetDryMix(mix);
+    setWetDryMix(mix);
   }, []);
 
   return (

@@ -1,9 +1,17 @@
+/**
+ * Options for initializing the ConvolverProcessor.
+ */
 export interface ConvolverProcessorOptions {
   audioContext: AudioContext;
   irBuffer: AudioBuffer;
   wetGainValue?: number;
 }
 
+/**
+ * A class that implements a convolver effect using Web Audio API.
+ * It provides methods to play and stop sounds, update the impulse response,
+ * and set the wet/dry mix.
+ */
 export class ConvolverProcessor {
   private audioContext: AudioContext;
   private convolverNode: ConvolverNode; // Reintroduce as class property
@@ -34,9 +42,6 @@ export class ConvolverProcessor {
     // Stop any currently playing sound and clean up
     this.stop();
 
-
-
-
     const bufferSource = this.audioContext.createBufferSource();
     bufferSource.buffer = buffer;
 
@@ -62,15 +67,17 @@ export class ConvolverProcessor {
         resolve();
       }, timeoutDelay);
     });
-  } // Closing brace for the play method
+  }
 
+  /**
+   * Stops the currently playing sound and cleans up resources.
+   * activeBufferSource is stopped by scheduled stop, just clear reference
+   */
   public stop(): void {
     if (this.timeoutId !== null) {
       window.clearTimeout(this.timeoutId);
       this.timeoutId = null;
     }
-
-    // activeBufferSource is stopped by scheduled stop, just clear reference
   }
 
   /**
